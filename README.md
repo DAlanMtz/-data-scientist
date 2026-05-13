@@ -1,6 +1,6 @@
 # Data Scientist Skill
 
-A senior, tool-flexible OpenCode skill for data mining, exploratory analysis, model building, validation, interpretation, business decision-making, responsible AI, and production-readiness.
+A senior, tool-flexible AI skill for data mining, exploratory analysis, model building, validation, interpretation, business decision-making, responsible AI, and production-readiness.
 
 The skill supports practical data science work across Python, R, SQL, Excel/Sheets, notebooks, scripts, databases, dashboards, APIs, and production pipelines. It is not tied to a course, language, or single modeling tool.
 
