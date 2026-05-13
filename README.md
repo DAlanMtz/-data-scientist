@@ -25,7 +25,9 @@ This skill is designed to support practical data science work across Python, R, 
 - Production readiness
 - Model monitoring and drift
 - Reporting and stakeholder communication
+
 ## Structure
+
 data-scientist/
 ├── SKILL.md
 ├── references/
@@ -33,11 +35,11 @@ data-scientist/
 ├── checklists/
 └── examples/
 
-Purpose
+## Purpose
 
 The goal of this skill is to help an assistant behave like a senior data scientist: choosing the right method, validating models honestly, preventing leakage, interpreting results clearly, and connecting analysis to real business decisions.
 
-Tooling
+## Tooling
 
 The skill is intentionally tool-flexible. It can guide work in:
 
