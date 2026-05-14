@@ -223,6 +223,7 @@ Load only the files needed for the task:
 - `templates/`: workflow and reporting skeletons to use when generating notebooks, reports, model cards, logs, dictionaries, or pipeline plans.
 - `templates/visual-analysis-workflow.md`: reusable workflow for visual analysis, visual storytelling, and dashboard planning.
 - `templates/visual-report-template.md`, `templates/html-report-template.md`, `templates/dashboard-design-brief-template.md`, and `templates/dashboard-qa-checklist-template.md`: visual report, HTML report, dashboard planning, and dashboard QA deliverables.
+- `templates/dashboards/`: reusable dashboard archetypes and a dependency-free HTML dashboard starter.
 - `checklists/`: task-specific review gates before modeling, deployment, audit, or responsible AI review.
 - `checklists/visual-report-checklist.md` and `checklists/dashboard-qa-checklist.md`: visual report and dashboard publish-quality checks.
 - `examples/`: language- and tool-specific examples for Python, R, SQL, and Excel/Sheets patterns.

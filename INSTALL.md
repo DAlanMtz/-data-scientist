@@ -118,7 +118,7 @@ skills/data-scientist/
 │   ├── prompts.md                    ← Evaluation prompts
 │   └── expected-behaviors.md         ← Qualitative pass/fail criteria
 ├── references/                       ← Domain guides (methodology, validation, metrics, etc.)
-├── templates/                        ← 29 reusable templates
+├── templates/                        ← 37 reusable templates
 ├── checklists/                       ← 13 audit and quality-control checklists
 └── examples/                         ← Python, R, SQL, Excel examples
 ```

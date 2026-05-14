@@ -127,7 +127,7 @@ Use this file before treating a data science artifact as complete, reliable, or 
 ## Dashboard Design Brief
 
 - **Minimum done criteria:** Defines users, decisions supported, primary KPIs, metric definitions, data sources, grain, refresh cadence, filters, layout plan, access/privacy needs, success criteria, and owner.
-- **Strong done criteria:** Adds user workflows, drill-down needs, alerts/thresholds, data quality dependencies, unsupported decisions, stakeholder acceptance criteria, and maintenance process.
+- **Strong done criteria:** Adds selected dashboard archetype from `templates/dashboards/`, component plan, user workflows, drill-down needs, alerts/thresholds, data quality dependencies, unsupported decisions, stakeholder acceptance criteria, and maintenance process.
 - **Blocking gaps:** Dashboard built before decisions/users are defined; no metric definitions; grain unclear; no refresh/freshness plan; no owner.
 - **Quality gate connection:** Interpretation Gate for communication dashboards; Production or Monitoring Gate for operational dashboards.
 - **Related template:** `templates/dashboard-design-brief-template.md`.

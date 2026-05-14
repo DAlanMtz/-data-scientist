@@ -29,6 +29,7 @@ Use this skill when you need an AI agent to reason and act like a senior data sc
 - Model monitoring and drift detection
 - Reporting and stakeholder communication
 - Visual reports, dashboard design briefs, dashboard QA, and HTML/PDF-ready reporting
+- Dashboard template library for analytics, executive KPI, model performance, forecasting, cohort retention, anomaly monitoring, and HTML prototypes
 
 ## Repository Map
 
@@ -39,7 +40,7 @@ skills/data-scientist/
 ├── prompts/                Copy-paste prompts that activate disciplined agent behavior
 ├── evals/                  Behavioral eval prompts and expected behavior checks
 ├── references/             Senior data science methodology, judgment, and domain guides
-├── templates/              Reusable deliverable and workflow templates (29 files)
+├── templates/              Reusable deliverable and workflow templates (37 files)
 ├── checklists/             Audit and quality-control checklists (13 files)
 └── examples/               Python, R, SQL, and Excel/Sheets implementation examples
 ```

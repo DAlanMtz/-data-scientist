@@ -22,6 +22,20 @@ Use this template before building or redesigning a dashboard. A dashboard is not
 - Decisions explicitly not supported:
 - Escalation or handoff actions:
 
+## Dashboard Archetype
+
+Select one primary archetype from `templates/dashboards/`. Borrow sections from a second template only when needed; do not combine every pattern into one overloaded dashboard.
+
+| Need | Recommended template |
+| --- | --- |
+| General metric exploration | `templates/dashboards/analytics-dashboard-template.md` |
+| Leadership status and action summary | `templates/dashboards/executive-kpi-dashboard-template.md` |
+| Model monitoring and drift/performance review | `templates/dashboards/model-performance-dashboard-template.md` |
+| Forecast planning and accuracy monitoring | `templates/dashboards/forecasting-dashboard-template.md` |
+| Retention, churn, repeat behavior | `templates/dashboards/cohort-retention-dashboard-template.md` |
+| Alert, anomaly, exception triage | `templates/dashboards/anomaly-monitoring-dashboard-template.md` |
+| Static dashboard prototype | `templates/dashboards/html-dashboard-starter-template.md` |
+
 ## Primary KPIs
 
 | KPI | Definition | Grain | Target/baseline | Refresh | Owner |
@@ -164,5 +178,8 @@ For each major workflow:
 
 - `references/visual-report-design-system.md`
 - `references/visual-storytelling-guide.md`
+- `references/dashboard-layout-patterns.md`
+- `references/dashboard-component-patterns.md`
+- `templates/dashboards/README.md`
 - `templates/dashboard-qa-checklist-template.md`
 - `checklists/dashboard-qa-checklist.md`

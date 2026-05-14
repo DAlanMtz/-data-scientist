@@ -472,12 +472,17 @@ Before creating or redesigning a dashboard, BI report, spreadsheet dashboard, no
 - Alerts, thresholds, and escalation actions
 - Data quality dependencies and visible freshness/status requirements
 - Explicit unsupported decisions and out-of-scope uses
+- Selected dashboard archetype from `templates/dashboards/`
+- Component plan for KPI cards, filters, trend panels, breakdowns, tables, alerts, and action cards
 - Stakeholder acceptance criteria
 - QA plan linked to publish decision
 
 ### Related Templates/Checklists
 - `templates/dashboard-design-brief-template.md`
+- `templates/dashboards/README.md`
 - `templates/dashboard-qa-checklist-template.md`
+- `references/dashboard-layout-patterns.md`
+- `references/dashboard-component-patterns.md`
 - `references/visual-report-design-system.md`
 - `references/visual-storytelling-guide.md`
 - `checklists/dashboard-qa-checklist.md`

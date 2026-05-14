@@ -26,8 +26,10 @@ Use this workflow when the task needs visual data analysis, visual model diagnos
 - Polished PDF/web output -> HTML Report (`templates/html-report-template.md`).
 - Dashboard planning -> Dashboard Design Brief (`templates/dashboard-design-brief-template.md`).
 - Dashboard validation -> Dashboard QA Checklist (`templates/dashboard-qa-checklist-template.md` and `checklists/dashboard-qa-checklist.md`).
+- Dashboard generation -> Dashboard Template Library (`templates/dashboards/README.md`) after the dashboard design brief identifies audience, decision, grain, KPIs, and refresh cadence.
 
 Use `references/visual-report-design-system.md` for stakeholder-facing design standards and `references/visual-storytelling-guide.md` for visual narrative structure.
+Use `references/dashboard-layout-patterns.md` and `references/dashboard-component-patterns.md` when selecting dashboard layout archetypes, KPI cards, filters, trend panels, tables, and monitoring components.
 
 ## Visual Analysis Objectives
 
