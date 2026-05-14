@@ -1,6 +1,6 @@
 # Stage Index — Quick Reference
 
-One-page map of the full lifecycle. Use this to orient quickly: find the stage, identify the gate, locate the artifact and template, confirm the checklist, and know the stop condition before proceeding.
+One-page map of the full lifecycle. Use this to orient quickly: find the stage, identify the gate, locate the artifact and template, confirm the checklist, check definition of done, and know the stop condition before proceeding.
 
 ---
 
@@ -27,8 +27,10 @@ One-page map of the full lifecycle. Use this to orient quickly: find the stage, 
 3. **Find the artifact** — What should be produced? See `artifacts.md` for minimum and strong-version contents.
 4. **Open the template** — Use the template in `templates/` to structure the output.
 5. **Run the checklist** — The listed checklist confirms the work is complete before the gate is declared passed.
-6. **Load the reference** — The key reference provides depth for the method or standard in question.
-7. **Apply the stop condition** — If the stop condition is true, do not advance. Name it explicitly and route back.
+6. **Check definition of done** — Before calling an artifact complete, verify `definition-of-done.md`.
+7. **Apply shortcut guardrails** — If the user or assistant is rationalizing a shortcut, use `rationalization-guardrails.md`.
+8. **Load the reference** — The key reference provides depth for the method or standard in question.
+9. **Apply the stop condition** — If the stop condition is true, do not advance. Name it explicitly and route back.
 
 ---
 
@@ -43,6 +45,8 @@ One-page map of the full lifecycle. Use this to orient quickly: find the stage, 
 | "How do I evaluate performance?" | Stage 3 or 7 | Open `validation-plan-template.md` or `decision-memo-template.md` |
 | "Is this ready to deploy?" | Stage 9 | Open `deployment-readiness-report-template.md`; check Production Gate |
 | "Something seems off in production" | Stage 10 | Open `monitoring-plan-template.md`; apply `severity-levels.md` |
+| "Can we skip this check?" | Any gated stage | Open `rationalization-guardrails.md`; require minimum evidence |
+| "Is this artifact done?" | Any artifact handoff | Open `definition-of-done.md`; check blocking gaps |
 
 ---
 

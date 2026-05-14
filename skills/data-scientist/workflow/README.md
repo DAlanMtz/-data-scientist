@@ -1,6 +1,6 @@
 # Workflow Layer
 
-**Version:** 1.1 | **Last updated:** 2026-05-13
+**Version:** 1.2 | **Last updated:** 2026-05-14
 
 ## Purpose
 
@@ -17,6 +17,8 @@ Without a workflow layer, a skilled assistant still drifts: it answers the quest
 | `stages.md` | Numbered stages with do/don't lists, inputs, outputs, and relevant supporting files |
 | `quality-gates.md` | Explicit pass/fail criteria between stages — the checkpoint before advancing |
 | `artifacts.md` | Standard deliverables — what to produce, when, and at what level of completeness |
+| `definition-of-done.md` | Final completion checks for common data science deliverables |
+| `rationalization-guardrails.md` | Shortcut prevention layer for common bad data science rationalizations |
 | `response-patterns.md` | How to handle common user requests with discipline and without over-engineering |
 | `severity-levels.md` | How to classify and communicate audit findings — Critical through Informational |
 
@@ -36,6 +38,12 @@ When a new request arrives, the assistant should:
 4. **Apply severity** — If auditing or reviewing, classify findings. (`severity-levels.md`)
 5. **Route to content** — Pull the relevant reference, template, checklist, or example.
 6. **Apply the response pattern** — Match the user's request type to the correct posture. (`response-patterns.md`)
+7. **Check definition of done** — Before declaring a deliverable complete, verify `definition-of-done.md`.
+8. **Use guardrails** — When a shortcut appears, apply `rationalization-guardrails.md` and require minimum evidence.
+
+## Proportional Use
+
+Apply the workflow proportionally. Quick conceptual, syntax, or method-definition questions can be answered directly and briefly. Project-level modeling, auditing, reporting, validation, dashboard review, or production-readiness work should use the stage/gate/artifact workflow.
 
 ## Design Principles
 
@@ -44,3 +52,4 @@ When a new request arrives, the assistant should:
 - **Artifacts over advice.** Concrete deliverables — a data audit, a validation plan, a model card — are more useful and more honest than general commentary.
 - **Severity over vagueness.** Calling a finding Critical, High, Medium, Low, or Informational is more actionable than calling it "a concern."
 - **Assumptions over silence.** When proceeding with incomplete information, name the assumptions and their risks. Do not silently fill gaps.
+- **Done means checkable.** A deliverable is not complete until it meets the appropriate definition of done or names the blocking gaps.

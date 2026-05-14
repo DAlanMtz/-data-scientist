@@ -40,7 +40,9 @@ OpenCode-style agents load skills from a local directory. To install:
 
 1. Copy or clone the skill folder into your skills directory (e.g., `~/.opencode/skills/` or your project's `skills/` folder).
 2. Keep the folder structure intact — `SKILL.md` is the entrypoint and supporting files are organized under `workflow/`, `references/`, `templates/`, `checklists/`, and `examples/`.
-3. The agent will load `SKILL.md` and route to supporting files as needed.
+3. Start with `prompts/quickstart-prompts.md` for copy-paste prompts that activate the skill correctly.
+4. Use `workflow/stage-index.md` as the orientation file for project-level work.
+5. Use `workflow/definition-of-done.md` before treating an artifact as complete.
 
 ```bash
 git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
@@ -54,7 +56,9 @@ Claude Code can use this skill as a project instruction source:
 1. Copy the skill folder into your project's `.claude/skills/` directory or a shared skills folder.
 2. In your project, reference `skills/data-scientist/SKILL.md` as the primary instruction file.
 3. Tell Claude Code: *"Read SKILL.md first, then use workflow/stage-index.md to orient the current work."*
-4. Supporting files under `workflow/`, `references/`, `templates/`, `checklists/`, and `examples/` will be referenced on demand.
+4. Start with `prompts/quickstart-prompts.md` for common audit, modeling, validation, reporting, and production-readiness prompts.
+5. Use `workflow/definition-of-done.md` before declaring a deliverable complete.
+6. Supporting files under `workflow/`, `prompts/`, `evals/`, `references/`, `templates/`, `checklists/`, and `examples/` will be referenced on demand.
 
 ```bash
 git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
@@ -68,6 +72,8 @@ For Codex or similar coding agents that support instruction files:
 1. Copy the skill folder into your agent's instructions or context directory.
 2. Set `SKILL.md` as the primary instruction file.
 3. When starting a data science task, instruct the agent: *"Use the workflow files (workflow/stage-index.md) before starting implementation to identify the correct project stage, artifact, and quality gate."*
+4. Use `workflow/definition-of-done.md` to check deliverable completeness.
+5. Start from `prompts/quickstart-prompts.md` when you want a ready-made prompt for audit, modeling, reporting, validation, or production-readiness work.
 
 ```bash
 git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
@@ -81,6 +87,8 @@ For any agent that supports custom instruction files:
 1. Provide `SKILL.md` as the primary instruction.
 2. Attach or reference supporting files from `workflow/`, `references/`, `templates/`, `checklists/`, or `examples/` as needed for the specific task.
 3. Use `workflow/stage-index.md` to orient the agent to the current project stage before starting work.
+4. Use `workflow/definition-of-done.md` to check whether the expected artifact is complete enough to trust or hand off.
+5. Use `prompts/quickstart-prompts.md` for copy-paste prompts that activate stage, gate, artifact, and next-action discipline.
 
 The minimum viable install is `SKILL.md` alone. For full functionality, keep the folder structure intact.
 
@@ -98,8 +106,16 @@ skills/data-scientist/
 │   ├── stages.md                     ← Stage-by-stage do/don't lists
 │   ├── quality-gates.md              ← Gate pass/fail criteria
 │   ├── artifacts.md                  ← Deliverable definitions
+│   ├── definition-of-done.md         ← Completion checks for common artifacts
+│   ├── rationalization-guardrails.md ← Shortcut prevention layer
 │   ├── response-patterns.md          ← How to handle common request types
 │   └── severity-levels.md            ← Audit finding classification
+├── prompts/
+│   └── quickstart-prompts.md         ← Copy-paste prompts for common tasks
+├── evals/
+│   ├── README.md                     ← How to use behavioral evals
+│   ├── prompts.md                    ← Evaluation prompts
+│   └── expected-behaviors.md         ← Qualitative pass/fail criteria
 ├── references/                       ← Domain guides (methodology, validation, metrics, etc.)
 ├── templates/                        ← 25 reusable templates
 ├── checklists/                       ← 11 audit and quality-control checklists

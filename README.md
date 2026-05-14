@@ -35,11 +35,35 @@ Use this skill when you need an AI agent to reason and act like a senior data sc
 skills/data-scientist/
 ├── SKILL.md                ← Primary entrypoint
 ├── workflow/               Operating system: stages, gates, artifacts, response patterns, severity levels
+├── prompts/                Copy-paste prompts that activate disciplined agent behavior
+├── evals/                  Behavioral eval prompts and expected behavior checks
 ├── references/             Senior data science methodology, judgment, and domain guides
 ├── templates/              Reusable deliverable and workflow templates (25 files)
 ├── checklists/             Audit and quality-control checklists (11 files)
 └── examples/               Python, R, SQL, and Excel/Sheets implementation examples
 ```
+
+## Workflow Discipline
+
+The skill guides an agent through a repeatable data science operating workflow:
+
+1. Identify the active lifecycle stage.
+2. Check the relevant quality gate.
+3. Choose the expected artifact.
+4. Apply the right checklist or reference.
+5. Confirm deliverable completeness with `skills/data-scientist/workflow/definition-of-done.md`.
+6. Use `skills/data-scientist/workflow/rationalization-guardrails.md` to prevent common shortcuts such as premature modeling, weak validation, accuracy-only evaluation, causal overclaiming, and notebook-only production claims.
+7. End with the next correct action.
+
+Use this workflow proportionally. Quick conceptual or syntax questions can be answered directly. Project-level modeling, auditing, reporting, validation, visualization, or production-readiness work should use the stage/gate/artifact workflow.
+
+## Quickstart Prompts
+
+See [`skills/data-scientist/prompts/quickstart-prompts.md`](skills/data-scientist/prompts/quickstart-prompts.md) for copy-paste prompts that activate the skill across agents. They cover notebook audits, dataset audits, modeling plans, validation strategy, leakage review, model comparison, error analysis, calibration and thresholds, decision memos, stakeholder reports, dashboard review, production readiness, monitoring, and notebook-to-production conversion.
+
+## Evaluation Prompts
+
+See [`skills/data-scientist/evals/`](skills/data-scientist/evals/) for lightweight behavioral evals. Use them when changing the skill or comparing agents to check whether the agent follows stage/gate/artifact discipline and avoids leakage, weak metrics, causal overclaiming, premature modeling, and premature production claims.
 
 ## Installation
 
