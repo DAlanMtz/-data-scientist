@@ -1,0 +1,30 @@
+{
+  "name": "data-scientist",
+  "title": "Data Scientist",
+  "version": "1.0.0",
+  "description": "A universal senior data scientist skill for data mining, model building, validation, interpretation, responsible AI, and production-readiness.",
+  "entrypoint": "SKILL.md",
+  "tags": [
+    "data-science",
+    "machine-learning",
+    "data-mining",
+    "analytics",
+    "model-validation",
+    "feature-engineering",
+    "forecasting",
+    "classification",
+    "regression",
+    "clustering",
+    "python",
+    "r",
+    "sql",
+    "excel",
+    "responsible-ai"
+  ],
+  "compatible_agents": [
+    "OpenCode",
+    "Claude Code",
+    "Codex",
+    "Markdown-based AI agents"
+  ]
+}

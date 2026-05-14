@@ -113,3 +113,82 @@ display(errors.sort_values("abs_error", ascending=False).head(20))
 - Removing real high-value outliers because they hurt metrics.
 - Ignoring systematic overprediction for a key segment.
 - Fitting preprocessing on full data before splitting.
+
+## Variable Selection
+
+### Regularization-Based Selection (Preferred for Prediction)
+
+```python
+from sklearn.linear_model import LassoCV, RidgeCV, ElasticNetCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+import numpy as np
+
+# LASSO with cross-validated alpha
+lasso_pipe = Pipeline([
+    ("scaler", StandardScaler()),
+    ("lasso", LassoCV(cv=5, random_state=42, max_iter=5000))
+])
+lasso_pipe.fit(X_train[numeric_features], y_train)
+
+lasso_model = lasso_pipe.named_steps["lasso"]
+print(f"Selected alpha: {lasso_model.alpha_:.4f}")
+selected = np.where(lasso_model.coef_ != 0)[0]
+print(f"Non-zero coefficients: {len(selected)} of {len(lasso_model.coef_)}")
+
+# Evaluate on test set
+y_pred_lasso = lasso_pipe.predict(X_test[numeric_features])
+mae_lasso = mean_absolute_error(y_test, y_pred_lasso)
+print(f"LASSO MAE: {mae_lasso:.2f}")
+```
+
+### Recursive Feature Elimination (Must Be Nested in CV)
+
+```python
+from sklearn.feature_selection import RFECV
+from sklearn.linear_model import Ridge
+from sklearn.model_selection import TimeSeriesSplit
+
+# RFE nested inside cross-validation — correct approach
+estimator = Ridge()
+rfecv = RFECV(
+    estimator=estimator,
+    step=1,
+    cv=TimeSeriesSplit(n_splits=5),  # or KFold for non-temporal data
+    scoring="neg_mean_absolute_error",
+    min_features_to_select=3
+)
+rfecv.fit(X_train[numeric_features], y_train)
+print(f"Optimal number of features: {rfecv.n_features_}")
+selected_features = [f for f, s in zip(numeric_features, rfecv.support_) if s]
+print(f"Selected features: {selected_features}")
+```
+
+### Classical Methods (For Interpretable Statistical Models Only)
+
+Python does not have a direct AIC/BIC-based stepwise function in scikit-learn. Use `statsmodels` for classical statistical selection:
+
+```python
+import statsmodels.api as sm
+from itertools import combinations
+
+# Backward elimination using p-values — use only for explanatory models
+def backward_elimination(X, y, significance_level=0.05):
+    features = list(X.columns)
+    while True:
+        model = sm.OLS(y, sm.add_constant(X[features])).fit()
+        pvalues = model.pvalues.drop("const")
+        max_pval = pvalues.max()
+        if max_pval > significance_level:
+            removed = pvalues.idxmax()
+            features.remove(removed)
+            print(f"Removed: {removed} (p={max_pval:.4f})")
+        else:
+            break
+    return features, model
+
+selected_features, final_model = backward_elimination(X_train[numeric_features], y_train)
+print(final_model.summary())
+```
+
+**Guardrail**: classical backward elimination run on training data only is acceptable for explanatory modeling. Never run variable selection on the full dataset (train + test combined) and then report test-set performance. The test estimate will be optimistic because the selection implicitly used test information.

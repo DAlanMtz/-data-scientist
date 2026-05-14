@@ -85,6 +85,17 @@ Consider:
 
 Choose the simplest model that meets performance, interpretation, and production needs.
 
+### Variable Selection (If Applicable)
+
+For interpretable statistical regression, classical variable selection methods may be appropriate:
+
+- **Backward elimination / forward selection / stepwise**: use for transparent, step-by-step variable selection in explanatory models. Treat as exploratory. For predictive performance estimation, the entire selection process must be nested inside the validation loop.
+- **Best subsets**: feasible for small predictor sets; evaluate by AIC, BIC, or adjusted R-squared.
+- **LASSO / elastic net**: preferred when the goal is predictive performance. The selection mechanism is nestable inside training folds and does not require pre-selecting variables.
+- **Domain-driven selection**: choose predictors based on subject matter expertise first, then validate computationally.
+
+**Guardrail**: do not run any data-driven variable selection on the full dataset and then report test-set performance as unbiased. This inflates apparent performance.
+
 ### 6. Cross-Validation
 
 Use:

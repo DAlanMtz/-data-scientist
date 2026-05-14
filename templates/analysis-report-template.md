@@ -1,6 +1,6 @@
 # Analysis Report Template
 
-Use this template for stakeholder-facing analysis reports, modeling summaries, decision memos, or professional analytic deliverables.
+Use this template for stakeholder-facing analysis reports, modeling summaries, and professional analytic deliverables. For operational threshold decisions and decision policy documentation (Stage 7), use `templates/decision-memo-template.md` instead — it is structured for co-ownership with the business stakeholder and includes threshold analysis, decision policy, and fallback rules.
 
 ## Required Inputs
 

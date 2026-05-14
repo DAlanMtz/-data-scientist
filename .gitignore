@@ -1,0 +1,45 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Logs and environment
+*.log
+.env
+.env.*
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Misc
+*.tmp
+*.bak
+Thumbs.db

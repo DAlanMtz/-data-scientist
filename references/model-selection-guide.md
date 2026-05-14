@@ -142,3 +142,62 @@ Use this guide to choose methods by problem type. Start with the simplest defens
 - Main risks: optimizing a proxy objective, brittle assumptions, ignored constraints, unstable estimates, unfair allocation.
 - Interpretation notes: show tradeoff curves and sensitivity to key assumptions; make the recommended policy auditable.
 
+## Variable Selection for Statistical and Regression Models
+
+Variable selection is the process of choosing which predictors to include in a model. The right approach depends on the goal: interpretability, inference, or predictive performance.
+
+### Classical Selection Methods
+
+Backward elimination, forward selection, and stepwise selection are classical methods. Use them mainly for interpretable statistical modeling, teaching, or when stakeholders require a transparent, step-by-step variable-selection process. They are not the default recommended approach for predictive modeling.
+
+| Method | How it works | When to use | Key risk |
+|---|---|---|---|
+| Backward elimination | Start full, remove least significant variables one at a time | Small datasets, explanatory models | Overfitting if not validated |
+| Forward selection | Start empty, add most significant variables one at a time | Large predictor pools, interpretability first | Misses interactions |
+| Stepwise selection | Alternate add/remove steps | Exploratory modeling | Invalidates p-values; unstable |
+| Best subsets | Evaluate all subsets, select by AIC/BIC/Cp | Small predictor count, exhaustive search | Computationally expensive; multiple comparisons |
+
+**Guardrails for classical methods:**
+
+- These methods are exploratory. They do not guarantee the optimal or most generalizable variable set.
+- Stepwise selection and best subsets invalidate standard errors and p-values due to the implicit multiple comparisons. Do not interpret selected coefficients as if the variables were pre-specified.
+- If estimating predictive performance, the entire selection procedure must be nested inside the validation loop. Running selection on the full dataset and then reporting test-set performance as unbiased is a form of data leakage.
+- Use AIC or BIC as selection criteria when the goal is model explanation; use cross-validated metrics when the goal is prediction.
+
+### Regularization-Based Selection
+
+Regularization is generally safer for predictive modeling because the selection mechanism is continuous, differentiable, and naturally nestable inside training folds.
+
+- **LASSO (L1 regularization)**: shrinks coefficients toward zero; zeroes out weak predictors, producing sparse solutions. Select the regularization strength by cross-validation.
+- **Ridge (L2 regularization)**: shrinks coefficients without zeroing them; good for correlated predictors.
+- **Elastic net**: combines L1 and L2; better than pure LASSO when predictors are correlated.
+- **Regularized logistic regression**: the same L1/L2/elastic-net approach for classification.
+
+Regularization does not require pre-selecting variables. It learns sparsity from data within validation.
+
+### Model-Based and Wrapper Methods
+
+- **Recursive feature elimination (RFE)**: fit, rank, remove weakest features, repeat. Must be nested inside cross-validation folds when used for feature selection that informs performance estimation.
+- **Permutation importance**: measure how much performance drops when a feature is randomly shuffled. More reliable than impurity-based importance for correlated features.
+- **Tree-based importance**: fast and interpretable but biased toward high-cardinality features. Use alongside permutation importance.
+
+### Domain-Driven Selection
+
+Choose variables based on subject matter expertise and business logic before fitting any model. This is often the most defensible approach because:
+
+- It is not susceptible to data-driven overfitting
+- It produces interpretable, maintainable feature sets
+- It aligns with how decisions are explained to stakeholders
+
+Use domain selection to produce the candidate set, then apply regularization or validation-based comparison to confirm which candidates earn their place.
+
+### Choosing a Selection Strategy
+
+| Goal | Recommended approach |
+|---|---|
+| Interpretable explanatory model | Domain selection + backward elimination with AIC/BIC; acknowledge p-value limitations |
+| Predictive performance | Regularization (LASSO/elastic net) or RFE nested inside CV |
+| High-dimensional data | Regularization; avoid stepwise |
+| Transparency required by stakeholders | Domain selection first; classical methods documented step by step |
+| Classical statistical inference | Domain selection; avoid data-driven selection if inference is the goal |
+

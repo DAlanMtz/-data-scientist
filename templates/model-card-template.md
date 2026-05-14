@@ -115,6 +115,8 @@ Include threshold-specific metrics when actions are thresholded.
 
 ### Monitoring Plan
 
+For the full monitoring specification, see `templates/monitoring-plan-template.md`. This section summarizes the monitoring approach for the model card.
+
 Monitor:
 
 - Data freshness and schema.

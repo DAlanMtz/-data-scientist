@@ -76,3 +76,83 @@ TukeyHSD(aov_fit)
 - Overstating observational findings as causal.
 - Hiding non-significant but practically important uncertainty.
 
+## Variable Selection
+
+### Classical Methods (Use for Interpretable Statistical Models)
+
+Backward elimination, forward selection, and stepwise selection are classical tools. Use for explanatory modeling where stakeholder interpretability of the variable-selection process is required. Treat as exploratory for prediction — nest inside validation if estimating predictive performance.
+
+```r
+library(MASS)  # stepAIC
+
+# Fit full model
+full_model <- lm(revenue ~ spend + tenure_days + plan + region + 
+                   support_tickets + active_days_30d, 
+                 data = train_df)
+
+# Backward elimination by AIC
+step_back <- stepAIC(full_model, direction = "backward", trace = FALSE)
+summary(step_back)
+
+# Forward selection by AIC
+null_model <- lm(revenue ~ 1, data = train_df)
+step_fwd <- stepAIC(null_model, 
+                    scope = list(lower = null_model, upper = full_model),
+                    direction = "forward", trace = FALSE)
+summary(step_fwd)
+
+# Stepwise (bidirectional)
+step_both <- stepAIC(full_model, direction = "both", trace = FALSE)
+summary(step_both)
+```
+
+**Guardrail**: The above uses AIC on training data. If you need unbiased predictive performance, repeat the entire stepAIC inside each cross-validation fold — do not select variables on the full dataset and then estimate performance on a held-out set.
+
+### Regularization-Based Selection (Preferred for Prediction)
+
+```r
+library(glmnet)
+
+# Prepare matrix form
+X_train <- model.matrix(revenue ~ spend + tenure_days + plan + region + 
+                          support_tickets + active_days_30d, 
+                        data = train_df)[, -1]
+y_train <- train_df$revenue
+
+# LASSO: lambda chosen by cross-validation
+lasso_cv <- cv.glmnet(X_train, y_train, alpha = 1)
+plot(lasso_cv)
+coef(lasso_cv, s = "lambda.1se")  # 1-SE rule for parsimony
+
+# Ridge
+ridge_cv <- cv.glmnet(X_train, y_train, alpha = 0)
+
+# Elastic net (alpha = 0.5 balances L1 and L2)
+enet_cv <- cv.glmnet(X_train, y_train, alpha = 0.5)
+
+# Evaluate on test set
+X_test <- model.matrix(revenue ~ spend + tenure_days + plan + region + 
+                         support_tickets + active_days_30d, 
+                       data = test_df)[, -1]
+pred_lasso <- predict(lasso_cv, newx = X_test, s = "lambda.1se")
+mae_lasso <- mean(abs(test_df$revenue - pred_lasso))
+cat("LASSO MAE:", mae_lasso, "\n")
+```
+
+### Best Subsets (Small Predictor Sets Only)
+
+```r
+library(leaps)
+
+subsets <- regsubsets(revenue ~ spend + tenure_days + plan + region + 
+                        support_tickets + active_days_30d, 
+                      data = train_df,
+                      nvmax = 8)
+summary_sub <- summary(subsets)
+
+# Select by BIC
+best_bic <- which.min(summary_sub$bic)
+cat("Best model by BIC has", best_bic, "variables\n")
+coef(subsets, best_bic)
+```
+

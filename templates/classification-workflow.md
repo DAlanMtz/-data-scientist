@@ -94,6 +94,17 @@ Consider:
 
 Prefer interpretable models when performance is similar.
 
+### Variable and Feature Selection (If Applicable)
+
+Feature selection in classification follows the same discipline as regression:
+
+- Classical methods (backward elimination, forward selection, stepwise): appropriate for logistic regression in interpretable contexts. Nest the entire selection procedure inside validation when estimating predictive performance.
+- Regularization (L1/L2/elastic net): preferred for predictive classification. LASSO logistic regression natively handles selection.
+- RFE and permutation importance: valid wrappers; must be nested inside CV folds.
+- Domain-driven selection: the safest default starting point.
+
+**Guardrail**: do not select features on the full dataset, then split and report test-set performance as unbiased. The estimate will be optimistic.
+
 ### 7. Cross-Validation
 
 Use CV that respects data structure:

@@ -32,6 +32,8 @@ Use for classification and regression model review before trusting results or pr
 - [ ] Text, embeddings, PCA, or feature selection are fit leakage-safely.
 - [ ] Resampling for imbalance is done only inside training folds.
 - [ ] Feature definitions are available at prediction time.
+- [ ] If classical variable selection was used (backward elimination, forward selection, stepwise), the entire selection process is nested inside validation folds — not run on the full dataset.
+- [ ] If selecting features data-driven, the selection method (regularization, RFE, importance-based) is applied inside training only, not fit on the validation or test set.
 
 ## Baselines And Candidate Models
 
@@ -115,4 +117,5 @@ Use for classification and regression model review before trusting results or pr
 - [ ] Test set used repeatedly for tuning.
 - [ ] Model wins only by tiny unstable metric gains.
 - [ ] Deployment is proposed with no monitoring or owner.
+- [ ] Variable selection run on full dataset before splitting, then test-set performance reported as unbiased.
 

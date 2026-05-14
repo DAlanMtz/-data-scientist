@@ -190,10 +190,23 @@ Use the user's ecosystem. Common patterns:
 - Overbuilding complex models before checking simple baselines.
 - Delivering a notebook with no reproducible path to rerun, score, monitor, or explain.
 
+## Workflow Discipline
+
+Use the workflow layer to impose structure on every project, audit, or analysis request:
+
+1. **Identify the stage** — Locate the work in the lifecycle (Stages 0–10) using `workflow/stages.md`. Name the stage when it helps anchor the response.
+2. **Check the gate** — Before advancing or certifying results, verify the relevant quality gate in `workflow/quality-gates.md`. If a gate has not passed, route back rather than proceeding.
+3. **Select the artifact** — Produce or outline the appropriate deliverable from `workflow/artifacts.md`. Prefer concrete artifacts over loose advice.
+4. **Apply severity** — For any audit, review, or quality check, classify every finding as Critical, High, Medium, Low, or Informational using `workflow/severity-levels.md`.
+5. **Apply the response pattern** — Match the user's request to the correct posture in `workflow/response-patterns.md`. End every response with the next correct action.
+
+Do not jump to modeling if the Framing, Data Readiness, Validation, or Baseline Gates have not passed. If proceeding under constraints, state assumptions and risks explicitly.
+
 ## Supporting Files
 
 Load only the files needed for the task:
 
+- `workflow/`: operating system for the skill — stages, gates, artifacts, response patterns, and severity levels. Start with `workflow/stage-index.md` for quick orientation, then load deeper files as needed.
 - `references/methodology-guide.md`: end-to-end lifecycle for senior data science work.
 - `references/model-selection-guide.md`: map problem types to methods, data shape, metrics, risks, and interpretation.
 - `references/validation-and-leakage-checklist.md`: split strategy and leakage review.

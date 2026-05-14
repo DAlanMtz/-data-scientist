@@ -290,6 +290,26 @@ Methods:
 - Use regularization, permutation importance, recursive selection, or tree-based importance carefully.
 - Check stability across folds, time periods, and segments.
 
+### Classical Selection Methods
+
+Backward elimination, forward selection, and stepwise selection are classical methods from statistical modeling. Use them mainly for interpretable regression contexts, teaching, or when a transparent manual variable-selection process is required.
+
+- **Backward elimination**: start with all candidate variables, remove the least significant one at a time based on p-values or AIC/BIC until all remaining variables meet a retention criterion.
+- **Forward selection**: start with no variables, add the most significant one at a time until adding more variables does not improve fit by the chosen criterion.
+- **Stepwise selection**: alternate between forward and backward steps; allows re-entry and re-removal.
+- **Best subsets regression**: evaluate all possible subsets of a candidate variable set and select by AIC, BIC, Cp, or adjusted R-squared. Computationally feasible for small to moderate predictor counts.
+- **Recursive feature elimination (RFE)**: fit a model, rank features by importance, remove the weakest, refit. Available in scikit-learn and the `caret` / `tidymodels` ecosystems.
+- **Regularization-based selection**: LASSO (L1) shrinks coefficients toward zero, often zeroing out weak predictors. Elastic net combines L1 and L2. Ridge (L2) does not produce sparse solutions but stabilizes estimates.
+- **Domain-driven selection**: choose variables based on subject matter expertise and business logic before fitting any model. Often the most defensible and maintainable approach.
+
+Guardrails:
+
+- Treat classical stepwise methods as exploratory and interpretability tools, not as default best practice for predictive modeling.
+- If using any data-driven selection method to estimate predictive performance, the entire selection process must be nested inside the validation loop — not run on the full dataset first.
+- Do not run backward elimination or forward selection on the full dataset, select variables, then split and report test-set performance as unbiased. The test estimate will be optimistic.
+- Regularization and domain-driven selection are generally safer for predictive modeling because regularization is differentiable and nestable inside training, and domain selection makes no data-driven choices that inflate performance.
+- For classical statistical inference (coefficient p-values, confidence intervals), stepwise selection invalidates standard errors and p-values even when done carefully. Report this limitation.
+
 Do not select features using the full dataset before validation.
 
 ## Feature Leakage Risks
