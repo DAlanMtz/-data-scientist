@@ -14,7 +14,7 @@ One-page map of the full lifecycle. Use this to orient quickly: find the stage, 
 | **5** | Model Development and Comparison | Model Comparison Gate | Experiment Log (full) + Model Comparison Report | `modeling-plan-template.md`, `experiment-log-template.md`, `model-comparison-report-template.md` | `supervised-learning-checklist.md` | `model-selection-guide.md`, `metrics-guide.md` | Only one model evaluated; tuning before split locked; model selected on training performance |
 | **6** | Diagnostics and Error Analysis | Diagnostics Gate | Error Analysis Report | `error-analysis-report-template.md` | `model-audit-checklist.md`, `responsible-ai-checklist.md` | `diagnostics-guide.md` | Subgroup analysis skipped; systematic errors uninvestigated; no out-of-time check |
 | **7** | Calibration, Thresholds, and Decision Policy | Calibration/Decision Gate | Calibration Report + Decision Memo | `calibration-report-template.md`, `decision-memo-template.md` | No dedicated checklist — see quality-gates.md Calibration/Decision Gate | `metrics-guide.md`, `diagnostics-guide.md` | Threshold not analyzed; calibration unchecked; decision policy undocumented |
-| **8** | Interpretation and Reporting | Interpretation Gate | Model Card + Business Report | `model-card-template.md`, `analysis-report-template.md` | `responsible-ai-checklist.md` | `interpretation-templates.md`, `reporting-templates.md` | Model card missing; limits not documented; no business translation |
+| **8** | Interpretation and Reporting | Interpretation Gate | Model Card + Business/Visual Report | `model-card-template.md`, `analysis-report-template.md`, `visual-report-template.md` | `responsible-ai-checklist.md`, `visual-report-checklist.md` | `interpretation-templates.md`, `reporting-templates.md`, `visual-storytelling-guide.md` | Model card missing; limits not documented; no business translation |
 | **9** | Deployment Readiness | Production Gate | Deployment Readiness Report | `deployment-readiness-report-template.md` | `deployment-checklist.md`, `responsible-ai-checklist.md` | `production-readiness-guide.md`, `production-pipeline-template.md`, `data-quality-and-contracts.md` | Input/output contract informal; artifact unversioned; monitoring plan absent |
 | **10** | Monitoring and Iteration | Monitoring Gate _(ongoing)_ | Monitoring Plan | `monitoring-plan-template.md` | `deployment-checklist.md` §Monitoring And Alerting | `model-monitoring-and-drift.md`, `diagnostics-guide.md` | No monitoring active; no retraining trigger; no review schedule |
 
@@ -43,6 +43,10 @@ One-page map of the full lifecycle. Use this to orient quickly: find the stage, 
 | "Is this feature leaking?" | Stage 1 or 3 | Check `validation-and-leakage-checklist.md`; update Data Audit |
 | "Which model should I use?" | Stage 3 or 5 | Confirm Validation Gate passed; open `modeling-plan-template.md` |
 | "How do I evaluate performance?" | Stage 3 or 7 | Open `validation-plan-template.md` or `decision-memo-template.md` |
+| "Make this into a stakeholder visual report" | Stage 8 | Open `visual-report-template.md`; use `visual-report-checklist.md` |
+| "Design a dashboard" | Stage 8, 9, or 10 | Open `dashboard-design-brief-template.md`; define decisions, metrics, grain, and refresh |
+| "QA this dashboard before publishing" | Stage 8, 9, or 10 | Open `dashboard-qa-checklist-template.md`; use `dashboard-qa-checklist.md` |
+| "Create a polished HTML/PDF report" | Stage 8 | Open `html-report-template.md`; apply `visual-report-checklist.md` |
 | "Is this ready to deploy?" | Stage 9 | Open `deployment-readiness-report-template.md`; check Production Gate |
 | "Something seems off in production" | Stage 10 | Open `monitoring-plan-template.md`; apply `severity-levels.md` |
 | "Can we skip this check?" | Any gated stage | Open `rationalization-guardrails.md`; require minimum evidence |

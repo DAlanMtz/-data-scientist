@@ -58,7 +58,8 @@ Claude Code can use this skill as a project instruction source:
 3. Tell Claude Code: *"Read SKILL.md first, then use workflow/stage-index.md to orient the current work."*
 4. Start with `prompts/quickstart-prompts.md` for common audit, modeling, validation, reporting, and production-readiness prompts.
 5. Use `workflow/definition-of-done.md` before declaring a deliverable complete.
-6. Supporting files under `workflow/`, `prompts/`, `evals/`, `references/`, `templates/`, `checklists/`, and `examples/` will be referenced on demand.
+6. For visual reports or dashboards, start with `templates/visual-analysis-workflow.md`, then route to the visual report, HTML report, dashboard design brief, or dashboard QA template.
+7. Supporting files under `workflow/`, `prompts/`, `evals/`, `references/`, `templates/`, `checklists/`, and `examples/` will be referenced on demand.
 
 ```bash
 git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
@@ -117,8 +118,8 @@ skills/data-scientist/
 │   ├── prompts.md                    ← Evaluation prompts
 │   └── expected-behaviors.md         ← Qualitative pass/fail criteria
 ├── references/                       ← Domain guides (methodology, validation, metrics, etc.)
-├── templates/                        ← 25 reusable templates
-├── checklists/                       ← 11 audit and quality-control checklists
+├── templates/                        ← 29 reusable templates
+├── checklists/                       ← 13 audit and quality-control checklists
 └── examples/                         ← Python, R, SQL, Excel examples
 ```
 

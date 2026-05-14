@@ -411,3 +411,141 @@ Drafted at Stage 9, activated at Stage 10. Updated when the model, data, or busi
 - `references/model-monitoring-and-drift.md`
 - `templates/monitoring-plan-template.md`
 - `checklists/deployment-checklist.md`
+
+---
+
+## Visual Report
+
+### Purpose
+Communicate analysis findings through a decision-first visual narrative. A visual report is for stakeholders who need a clear answer, evidence, limitations, and recommended action rather than a chart dump.
+
+### When to Produce It
+At Stage 8 when results need stakeholder communication, executive review, or a polished narrative output. It may also summarize Stage 2 EDA when the goal is exploratory communication rather than modeling.
+
+### Minimum Contents
+- Audience and decision supported
+- Business question and data used
+- Executive visual summary
+- Key metrics with definitions and denominators
+- Chart inventory mapping each visual to a question
+- Findings with captions and takeaways
+- Limitations and uncertainty
+- Recommendation and next action
+
+### Strong Version Contents
+- Full visual story sequence with hierarchy and appendix separation
+- Consistent design system for typography, layout, color, captions, and tables
+- Stakeholder-ready captions that state implications
+- Uncertainty visualized where it changes the decision
+- Export/readability review for the target medium
+- Quality checklist completed
+
+### Related Templates/Checklists
+- `templates/visual-report-template.md`
+- `templates/html-report-template.md`
+- `references/visual-report-design-system.md`
+- `references/visual-storytelling-guide.md`
+- `checklists/visual-report-checklist.md`
+
+---
+
+## Dashboard Design Brief
+
+### Purpose
+Define the decision, audience, metrics, layout, data dependencies, and operating workflow before building a dashboard.
+
+### When to Produce It
+Before creating or redesigning a dashboard, BI report, spreadsheet dashboard, notebook dashboard, or app-based analytics view.
+
+### Minimum Contents
+- Dashboard name and owner
+- Audience/users and decisions supported
+- Primary KPIs and metric definitions
+- Data sources, grain, and refresh cadence
+- Filters/slicers and default views
+- Page/layout plan and visual hierarchy
+- Access/privacy needs
+- Success criteria and maintenance owner
+
+### Strong Version Contents
+- User workflows with drill-down and export needs
+- Alerts, thresholds, and escalation actions
+- Data quality dependencies and visible freshness/status requirements
+- Explicit unsupported decisions and out-of-scope uses
+- Stakeholder acceptance criteria
+- QA plan linked to publish decision
+
+### Related Templates/Checklists
+- `templates/dashboard-design-brief-template.md`
+- `templates/dashboard-qa-checklist-template.md`
+- `references/visual-report-design-system.md`
+- `references/visual-storytelling-guide.md`
+- `checklists/dashboard-qa-checklist.md`
+
+---
+
+## Dashboard QA Checklist
+
+### Purpose
+Certify that a dashboard is accurate, readable, secure, performant, and usable before publication or material change.
+
+### When to Produce It
+Before publishing a new dashboard, after major metric or source changes, and during recurring dashboard audits.
+
+### Minimum Contents
+- Data freshness verification
+- Metric definition checks
+- Filter behavior checks
+- Aggregation, grain, total, and subtotal checks
+- Cross-visual consistency checks
+- Permissions/privacy checks
+- Performance and export/share checks
+- Stakeholder signoff decision
+
+### Strong Version Contents
+- Source reconciliation evidence for primary KPIs
+- User-group permission test results
+- Mobile/screen-size review when relevant
+- Severity-labeled issues with owners and due dates
+- Publish decision: approve, approve with conditions, or reject
+- Maintenance and review cadence confirmation
+
+### Related Templates/Checklists
+- `templates/dashboard-qa-checklist-template.md`
+- `templates/dashboard-design-brief-template.md`
+- `checklists/dashboard-qa-checklist.md`
+
+---
+
+## HTML Report
+
+### Purpose
+Provide a self-contained, dependency-light report format for polished browser review, PDF export, or static sharing when markdown is not enough.
+
+### When to Produce It
+When the user needs a polished visual report, PDF-ready output, browser-rendered artifact, or static handoff that should preserve layout and styling.
+
+### Minimum Contents
+- Report title, audience, decision supported, and data freshness
+- Executive summary
+- KPI cards
+- Chart containers with takeaway titles/captions
+- Findings table or section
+- Limitations
+- Recommendations and next action
+- Print/export guidance
+
+### Strong Version Contents
+- Design tokens for typography, color, spacing, layout, and status colors
+- Responsive and print-friendly CSS
+- Accessible semantic HTML structure
+- Readable table styling
+- Export QA notes
+- Links to visual design and storytelling references
+
+### Related Templates/Checklists
+- `templates/html-report-template.md`
+- `templates/visual-report-template.md`
+- `references/visual-report-design-system.md`
+- `references/visual-storytelling-guide.md`
+- `checklists/visual-report-checklist.md`

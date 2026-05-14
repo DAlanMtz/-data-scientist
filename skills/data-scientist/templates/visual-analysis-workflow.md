@@ -19,6 +19,16 @@ Use this workflow when the task needs visual data analysis, visual model diagnos
 - Dashboard or report visual plan, if recurring.
 - Notes on limitations, uncertainty, and misleading-chart risks.
 
+## Deliverable Routing
+
+- Exploratory visuals -> EDA Summary (`templates/eda-notebook-template.md` or `templates/analysis-report-template.md`).
+- Stakeholder narrative -> Visual Report (`templates/visual-report-template.md`).
+- Polished PDF/web output -> HTML Report (`templates/html-report-template.md`).
+- Dashboard planning -> Dashboard Design Brief (`templates/dashboard-design-brief-template.md`).
+- Dashboard validation -> Dashboard QA Checklist (`templates/dashboard-qa-checklist-template.md` and `checklists/dashboard-qa-checklist.md`).
+
+Use `references/visual-report-design-system.md` for stakeholder-facing design standards and `references/visual-storytelling-guide.md` for visual narrative structure.
+
 ## Visual Analysis Objectives
 
 - [ ] Identify data quality problems.
@@ -237,4 +247,3 @@ Avoid dashboards that are just chart collections with no operating decision.
 - Excel/Sheets: use pivots, charts, slicers, and conditional formatting for smaller or stakeholder-facing analysis; protect raw data.
 - Notebooks: pair each chart with a markdown takeaway and caveat.
 - Dashboards/BI tools: define metric glossary, refresh process, filters, row-level security, and ownership.
-

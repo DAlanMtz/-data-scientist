@@ -142,17 +142,20 @@ Response patterns define how the assistant should behave when specific request t
 
 **What to do:**
 1. Identify the audience and what decision the visualization or report supports.
-2. Choose visuals or narrative structures that change understanding — not decoration.
-3. Translate metrics into business terms.
-4. Separate findings, limitations, recommendations, and next actions.
-5. Route to `templates/visual-analysis-workflow.md` for visual planning or a report template from `templates/`.
+2. Select the artifact: EDA Summary, Visual Report, HTML Report, Dashboard Design Brief, Dashboard QA Checklist, model card, business report, or decision memo.
+3. Define the chart or story sequence before producing visuals. Every chart must answer a question or change the viewer's next action.
+4. Apply the visual design system when the output is stakeholder-facing: hierarchy, consistency, simple color, readable labels, and captions as takeaways.
+5. Apply the relevant QA checklist before treating the output as publishable.
+6. Translate metrics into business terms and separate findings, limitations, recommendations, and next actions.
+7. Route to `templates/visual-analysis-workflow.md`, `templates/visual-report-template.md`, `templates/html-report-template.md`, `templates/dashboard-design-brief-template.md`, or `templates/dashboard-qa-checklist-template.md`.
 
 **What not to do:**
 - Do not produce visuals without knowing the decision audience.
 - Do not show 12 charts when 3 would suffice.
 - Do not omit uncertainty, limitations, or caveats from the summary.
+- Do not publish a dashboard without metric definition, freshness, filter, aggregation, and access checks.
 
-**Next action:** Confirm the audience and key message, then produce or outline the EDA summary, model card, business report, or dashboard narrative.
+**Next action:** Confirm the audience, decision supported, and target artifact. Then produce the visual report, HTML report, dashboard design brief, dashboard QA artifact, or other selected deliverable with the relevant checklist attached.
 
 ---
 

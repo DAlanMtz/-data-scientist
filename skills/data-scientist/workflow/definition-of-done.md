@@ -116,6 +116,38 @@ Use this file before treating a data science artifact as complete, reliable, or 
 - **Quality gate connection:** Monitoring Gate.
 - **Related template:** `templates/monitoring-plan-template.md`.
 
+## Visual Report
+
+- **Minimum done criteria:** Defines audience, decision supported, business question, data used, executive visual summary, key metrics, chart inventory, findings, limitations, recommendation, and next action.
+- **Strong done criteria:** Adds a clear visual story sequence, consistent design system, takeaway captions, uncertainty/denominator notes, appendix separation, and export/readability review.
+- **Blocking gaps:** Charts without questions; no decision supported; captions only name chart types; inconsistent metric definitions; recommendation missing or unsupported.
+- **Quality gate connection:** Interpretation Gate.
+- **Related template:** `templates/visual-report-template.md`.
+
+## Dashboard Design Brief
+
+- **Minimum done criteria:** Defines users, decisions supported, primary KPIs, metric definitions, data sources, grain, refresh cadence, filters, layout plan, access/privacy needs, success criteria, and owner.
+- **Strong done criteria:** Adds user workflows, drill-down needs, alerts/thresholds, data quality dependencies, unsupported decisions, stakeholder acceptance criteria, and maintenance process.
+- **Blocking gaps:** Dashboard built before decisions/users are defined; no metric definitions; grain unclear; no refresh/freshness plan; no owner.
+- **Quality gate connection:** Interpretation Gate for communication dashboards; Production or Monitoring Gate for operational dashboards.
+- **Related template:** `templates/dashboard-design-brief-template.md`.
+
+## Dashboard QA Checklist
+
+- **Minimum done criteria:** Verifies data freshness, metric definitions, filters, aggregation/grain, totals/subtotals, date ranges, cross-visual consistency, permissions/privacy, performance, and signoff decision.
+- **Strong done criteria:** Adds source reconciliation, user-group permission testing, screen-size review, severity-labeled issues, publish decision, and maintenance cadence confirmation.
+- **Blocking gaps:** Primary KPIs cannot be reconciled; users cannot see freshness; filters silently change definitions; unauthorized access; no stakeholder signoff.
+- **Quality gate connection:** Interpretation Gate for reporting dashboards; Monitoring Gate for operational monitoring dashboards.
+- **Related template:** `templates/dashboard-qa-checklist-template.md`.
+
+## HTML Report
+
+- **Minimum done criteria:** Provides self-contained HTML with title, audience, decision, data freshness, executive summary, KPI cards, chart containers, findings, limitations, recommendations, and print/export guidance.
+- **Strong done criteria:** Adds design tokens, responsive layout, print-friendly CSS, accessible semantic sections, readable tables, and report QA notes.
+- **Blocking gaps:** Output depends on hidden local assets without explanation; charts have no captions; print/PDF export is unreadable; recommendation or limitations missing.
+- **Quality gate connection:** Interpretation Gate.
+- **Related template:** `templates/html-report-template.md`.
+
 ---
 
 ## Completion Rule
@@ -126,4 +158,3 @@ Before saying an artifact is complete, check:
 2. No blocking gaps remain.
 3. The relevant gate can pass or the remaining limitation is explicitly documented.
 4. The next correct action is named.
-

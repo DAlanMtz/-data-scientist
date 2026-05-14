@@ -219,9 +219,12 @@ Load only the files needed for the task:
 - `references/metrics-guide.md`: choose metrics by model family and business cost.
 - `references/diagnostics-guide.md`: diagnose model behavior, data quality, and failures.
 - Other `references/` files: detailed guidance on feature engineering, visualization, interpretation, reporting, responsible AI, production, experiments, data contracts, monitoring, causal analysis, and decision science.
+- `references/visual-report-design-system.md` and `references/visual-storytelling-guide.md`: standards for decision-first visual reports and dashboards.
 - `templates/`: workflow and reporting skeletons to use when generating notebooks, reports, model cards, logs, dictionaries, or pipeline plans.
 - `templates/visual-analysis-workflow.md`: reusable workflow for visual analysis, visual storytelling, and dashboard planning.
+- `templates/visual-report-template.md`, `templates/html-report-template.md`, `templates/dashboard-design-brief-template.md`, and `templates/dashboard-qa-checklist-template.md`: visual report, HTML report, dashboard planning, and dashboard QA deliverables.
 - `checklists/`: task-specific review gates before modeling, deployment, audit, or responsible AI review.
+- `checklists/visual-report-checklist.md` and `checklists/dashboard-qa-checklist.md`: visual report and dashboard publish-quality checks.
 - `examples/`: language- and tool-specific examples for Python, R, SQL, and Excel/Sheets patterns.
 - `prompts/`: copy-paste prompts that activate stage, gate, artifact, and next-action discipline.
 - `evals/`: lightweight behavioral test prompts and expected behaviors for future skill edits.
