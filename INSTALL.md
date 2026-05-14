@@ -2,18 +2,32 @@
 
 This skill is a markdown-based instruction set for AI agents. Installation means making the skill files available to your agent system.
 
-## Quick Install
+## GitHub CLI Install (recommended)
 
-Clone the repo:
+If your agent supports `gh skill install`, use the appropriate command below:
+
+```bash
+# OpenCode
+gh skill install DAlanMtz/data-scientist data-scientist --agent opencode --scope user
+
+# Codex
+gh skill install DAlanMtz/data-scientist data-scientist --agent codex --scope user
+
+# Claude Code
+gh skill install DAlanMtz/data-scientist data-scientist --agent claude-code --scope user
+```
+
+The skill files live under `skills/data-scientist/` in this repo — the GitHub CLI discovery convention requires this layout.
+
+---
+
+## Manual Install
+
+Clone the repo, then copy the skill folder into your agent's skills directory:
 
 ```bash
 git clone https://github.com/DAlanMtz/data-scientist.git
-```
-
-Or copy into an existing skills directory:
-
-```bash
-cp -R data-scientist /path/to/your/agent/skills/
+cp -R data-scientist/skills/data-scientist /path/to/your/agent/skills/
 ```
 
 ---
@@ -24,43 +38,40 @@ cp -R data-scientist /path/to/your/agent/skills/
 
 OpenCode-style agents load skills from a local directory. To install:
 
-1. Clone or copy the `data-scientist` folder into your skills directory (e.g., `~/.opencode/skills/` or your project's `skills/` folder).
+1. Copy or clone the skill folder into your skills directory (e.g., `~/.opencode/skills/` or your project's `skills/` folder).
 2. Keep the folder structure intact — `SKILL.md` is the entrypoint and supporting files are organized under `workflow/`, `references/`, `templates/`, `checklists/`, and `examples/`.
 3. The agent will load `SKILL.md` and route to supporting files as needed.
 
 ```bash
-git clone https://github.com/DAlanMtz/data-scientist.git ~/.opencode/skills/data-scientist
+git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
+cp -R /tmp/ds-skill/skills/data-scientist ~/.opencode/skills/data-scientist
 ```
 
 ### Claude Code
 
 Claude Code can use this skill as a project instruction source:
 
-1. Clone or copy the repo into your project directory or a shared skills folder.
-2. In your project, reference or copy `SKILL.md` as the primary instruction file.
+1. Copy the skill folder into your project's `.claude/skills/` directory or a shared skills folder.
+2. In your project, reference `skills/data-scientist/SKILL.md` as the primary instruction file.
 3. Tell Claude Code: *"Read SKILL.md first, then use workflow/stage-index.md to orient the current work."*
 4. Supporting files under `workflow/`, `references/`, `templates/`, `checklists/`, and `examples/` will be referenced on demand.
 
 ```bash
-git clone https://github.com/DAlanMtz/data-scientist.git .claude/skills/data-scientist
-```
-
-Or add to your project's `.claude/` directory:
-
-```bash
-cp -R data-scientist /your/project/.claude/skills/
+git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
+cp -R /tmp/ds-skill/skills/data-scientist .claude/skills/data-scientist
 ```
 
 ### Codex and Coding Agents
 
 For Codex or similar coding agents that support instruction files:
 
-1. Clone or copy the skill folder into your agent's instructions or context directory.
+1. Copy the skill folder into your agent's instructions or context directory.
 2. Set `SKILL.md` as the primary instruction file.
 3. When starting a data science task, instruct the agent: *"Use the workflow files (workflow/stage-index.md) before starting implementation to identify the correct project stage, artifact, and quality gate."*
 
 ```bash
-git clone https://github.com/DAlanMtz/data-scientist.git ~/instructions/data-scientist
+git clone https://github.com/DAlanMtz/data-scientist.git /tmp/ds-skill
+cp -R /tmp/ds-skill/skills/data-scientist ~/instructions/data-scientist
 ```
 
 ### Generic AI Agents (Any Markdown-Skill System)
@@ -78,7 +89,7 @@ The minimum viable install is `SKILL.md` alone. For full functionality, keep the
 ## File Structure Reference
 
 ```text
-data-scientist/
+skills/data-scientist/
 ├── SKILL.md                          ← Primary entrypoint
 ├── workflow/
 │   ├── README.md                     ← Workflow layer overview
@@ -102,6 +113,12 @@ data-scientist/
 ```bash
 cd data-scientist
 git pull
+```
+
+Then re-copy if using a manual install:
+
+```bash
+cp -R skills/data-scientist /path/to/your/agent/skills/data-scientist
 ```
 
 ## License
