@@ -126,11 +126,25 @@ plt.tight_layout()
 plt.show()
 ```
 
+## House Style And Chart Quality
+
+For stakeholder-facing charts, apply the house style before any plotting to replace matplotlib defaults (DejaVu Sans font, tab10 color cycle, box spines, dense grid):
+
+```python
+# At the top of the notebook or script
+import matplotlib as mpl
+# Paste HOUSE_RCPARAMS and CHART_COLORS from references/chart-style-system.md
+mpl.rcParams.update(HOUSE_RCPARAMS)
+```
+
+See `references/chart-style-system.md` for the full rcParams dict, color palette constants, helper functions (`clean_axes`, `direct_label`, `annotate_event`, `save_chart`), and standard figure sizes.
+See `references/design-craft-guide.md` for the craft principles: what makes a chart look AI-generated and how to fix it.
+
 ## Optional Library Notes
 
-- seaborn can simplify boxplots, pairplots, heatmaps, and faceted charts.
-- plotly can help with interactive stakeholder exploration.
-- Keep matplotlib examples as the portable baseline.
+- seaborn can simplify boxplots, pairplots, heatmaps, and faceted charts — use `use_seaborn_house_style()` from `references/chart-style-system.md` to override seaborn defaults before plotting.
+- plotly can help with interactive stakeholder exploration — use `PLOTLY_HOUSE_TEMPLATE` from `references/chart-style-system.md`.
+- Keep matplotlib examples as the portable baseline when seaborn or plotly are unavailable.
 
 ## Caption Pattern
 

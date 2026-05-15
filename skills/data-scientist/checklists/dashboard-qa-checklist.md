@@ -108,7 +108,11 @@ Use this checklist before publishing, revising, or certifying a dashboard. It ap
 
 ## Related Files
 
-- `templates/dashboard-design-brief-template.md`
-- `templates/dashboard-qa-checklist-template.md`
-- `references/visual-report-design-system.md`
-- `references/visual-storytelling-guide.md`
+- `references/design-craft-guide.md` — craft principles and dashboard anti-patterns; apply before publishing
+- `references/chart-style-system.md` — house palette and chart style; apply to embedded charts
+- `references/visual-report-design-system.md` — design token reference (hex values, type scale, spacing, palette)
+- `references/visual-storytelling-guide.md` — dashboard vs report storytelling; narrative decisions
+- `references/dashboard-layout-patterns.md` — layout archetypes by decision type
+- `references/dashboard-component-patterns.md` — KPI card, filter, trend, cohort, and table component patterns
+- `templates/dashboard-design-brief-template.md` — design brief before building
+- `templates/dashboard-qa-checklist-template.md` — QA template for structured review

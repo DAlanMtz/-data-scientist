@@ -486,7 +486,9 @@ The CSS below uses the canonical design tokens from `references/visual-report-de
 
 ## Related References And Checklists
 
-- `references/visual-report-design-system.md`
-- `references/visual-storytelling-guide.md`
-- `templates/visual-report-template.md`
-- `checklists/visual-report-checklist.md`
+- `references/design-craft-guide.md` — craft principles, AI anti-patterns, typography, space, color discipline, chart polish
+- `references/chart-style-system.md` — matplotlib/ggplot2 house style code and color palette constants
+- `references/visual-report-design-system.md` — design token reference (hex values, type scale, spacing scale)
+- `references/visual-storytelling-guide.md` — narrative structure, caption writing, decision-first sequencing
+- `templates/visual-report-template.md` — markdown-first version of this report structure
+- `checklists/visual-report-checklist.md` — publish-quality checks before sharing

@@ -161,8 +161,11 @@ Include only details needed for review:
 
 ## Related References And Checklists
 
-- `references/visual-report-design-system.md`
-- `references/visual-storytelling-guide.md`
-- `references/visualization-guide.md`
-- `templates/visual-analysis-workflow.md`
-- `checklists/visual-report-checklist.md`
+- `references/design-craft-guide.md` — craft principles and AI anti-patterns; apply before finalizing any stakeholder-facing visual
+- `references/chart-style-system.md` — matplotlib/ggplot2/Plotly house style code; apply to all Python and R charts
+- `references/visual-report-design-system.md` — design token reference (hex values, type scale, spacing, palette)
+- `references/visual-storytelling-guide.md` — narrative structure, caption writing, decision-first sequencing
+- `references/visualization-guide.md` — chart type selection by question
+- `templates/visual-analysis-workflow.md` — end-to-end visual analysis and dashboard planning workflow
+- `templates/html-report-template.md` — polished HTML version of this report structure
+- `checklists/visual-report-checklist.md` — publish-quality checks before sharing

@@ -96,7 +96,9 @@ Use this checklist before sharing a stakeholder visual report, executive readout
 
 ## Related Files
 
-- `references/visual-report-design-system.md`
-- `references/visual-storytelling-guide.md`
-- `templates/visual-report-template.md`
-- `templates/html-report-template.md`
+- `references/design-craft-guide.md` — craft principles and AI anti-pattern reference; use before finalizing any stakeholder-facing visual
+- `references/chart-style-system.md` — matplotlib/ggplot2/Plotly house style; apply to all Python and R charts
+- `references/visual-report-design-system.md` — design token reference (hex values, type scale, spacing, palette)
+- `references/visual-storytelling-guide.md` — narrative structure, caption writing, decision-first sequencing
+- `templates/visual-report-template.md` — markdown report structure template
+- `templates/html-report-template.md` — polished HTML report with design tokens applied
