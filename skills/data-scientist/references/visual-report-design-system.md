@@ -4,6 +4,118 @@ Use this default design system for professional analytics reports, dashboards, a
 
 The design principle is decision-first: the layout should make the supported decision, strongest evidence, and recommended action easier to find than everything else.
 
+For the craft layer — what makes output look AI-generated vs. professionally crafted — see `references/design-craft-guide.md`. For ready-to-paste Python and R chart style code, see `references/chart-style-system.md`.
+
+---
+
+## Design Token Reference
+
+These values define the default system. Apply them to HTML/CSS reports, notebooks, BI tools, and chart configurations. Override any token with the user's brand system.
+
+### Typography
+
+```
+Font stack (HTML/CSS):
+  system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif
+
+Font stack (monospace / data tables):
+  "SFMono-Regular", "Cascadia Mono", Menlo, Consolas, "Liberation Mono", monospace
+
+Charts (Python rcParams):
+  font.sans-serif: ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]
+```
+
+### Type scale
+
+| Role | Size | Weight | Line height |
+|---|---|---|---|
+| Report title (h1) | 34px | 700 | 1.15 |
+| Section heading (h2) | 22px | 700 | 1.3 |
+| Subsection (h3) | 17px | 600 | 1.4 |
+| Body text | 15px | 400 | 1.65 |
+| Label / metric name | 13px | 500 | 1.4 |
+| Caption / footnote | 12–13px | 400 | 1.5 |
+| KPI value (large) | 30px | 700 | 1.1 |
+| Chart axis label | 10–11px | 400 | — |
+| Chart title | 13px | 700 | — |
+
+### Spacing scale (8px grid)
+
+| Token | Value | Use |
+|---|---|---|
+| sp-1 | 4px | Icon-text gap, micro spacing |
+| sp-2 | 8px | Inside compact components |
+| sp-3 | 12px | Card inner padding (compact) |
+| sp-4 | 16px | Standard inner padding |
+| sp-6 | 24px | Between related components |
+| sp-8 | 32px | Between sections in a column |
+| sp-10 | 40px | Section break (above h2) |
+| sp-12 | 48px | Page horizontal margin |
+| sp-16 | 64px | Between major report sections |
+
+### Color tokens
+
+```
+─── Surface ────────────────────────────────────────────────────
+--bg:             #f7f8f9   warm off-white page background
+--surface:        #ffffff   card / section background
+--border:         #e3e5e8   card edges, table borders, grid lines
+--border-strong:  #c8cbd0   dividers between major sections
+
+─── Text ───────────────────────────────────────────────────────
+--text:           #11141a   primary text (near-black, slightly warm)
+--text-secondary: #4a5060   secondary text, axis titles
+--text-muted:     #848c9a   labels, captions, footnotes, tick text
+
+─── Accent ─────────────────────────────────────────────────────
+--accent:         #2952c4   primary highlight, links, selected state
+--accent-light:   #e8edfc   accent tint for backgrounds
+
+─── Semantic status ────────────────────────────────────────────
+--positive:       #1d7d4c   favorable (forest green)
+--positive-bg:    #e8f7ee
+--warning:        #a05c0a   needs review (amber-brown)
+--warning-bg:     #fef3e2
+--negative:       #b72b2b   risk / alert (deep red)
+--negative-bg:    #fdeaea
+
+─── Reference ──────────────────────────────────────────────────
+--reference:      #9ba5b2   baselines, averages, historical context
+```
+
+### Chart categorical sequence
+
+Apply in order. Use the same color for the same category across all charts in the report.
+
+| # | Hex | Name | When to use |
+|---|---|---|---|
+| 1 | `#2952c4` | Deep blue | Primary series, most important category |
+| 2 | `#d4531c` | Burnt orange | Second series, contrast to blue |
+| 3 | `#2a7f62` | Forest green | Third series |
+| 4 | `#7c3aac` | Deep purple | Fourth series |
+| 5 | `#b5282f` | Brick red | Fifth series |
+| 6 | `#1a8fa8` | Teal | Sixth series |
+| 7 | `#c07d2e` | Amber | Seventh series |
+| 8 | `#9ba5b2` | Slate gray | Reference, baseline, historical context |
+
+Never use the default matplotlib tab10, seaborn, or BI tool default palettes in stakeholder-facing output.
+
+### Sequential palettes
+
+For density, intensity, or single-metric heatmaps (light to dark):
+
+- Blue: `#e8edfc → #adbdf0 → #7290e1 → #2952c4 → #1a347a`
+- Gray: `#f4f5f6 → #d1d5db → #9ca3af → #6b7280 → #374151`
+- Green: `#e3f7ed → #9ad9bb → #4db584 → #1d7d4c → #104d2f`
+
+### Diverging palette
+
+For two-sided data (above/below target, positive/negative change):
+
+`#d4531c → #f2bfa6 → #f5f0ee → #b3c7ee → #2952c4`
+
+---
+
 ## Design Priorities
 
 - Put the decision and answer before supporting detail.
@@ -15,16 +127,18 @@ The design principle is decision-first: the layout should make the supported dec
 
 ## Typography Hierarchy
 
-Use a clear hierarchy even if the output is markdown, HTML, notebook, BI dashboard, slide deck, or spreadsheet.
+Use a clear hierarchy even if the output is markdown, HTML, notebook, BI dashboard, slide deck, or spreadsheet. Apply the type scale from the Design Token Reference above.
 
-- Report title: short, decision-relevant, largest text on the page.
-- Section heading: names the business question or decision area.
-- Chart title: states the insight or question answered.
-- Chart subtitle: defines population, time window, metric, denominator, and filters.
-- Caption/takeaway: explains why the viewer should care and what action may change.
-- Footnote: method, caveat, source, or definition detail.
+- Report title: short, decision-relevant, largest text on the page. Use --text (near-black) at h1 size.
+- Section heading: names the business question or decision area. Visually distinct from title; does not compete.
+- Chart title: states the insight or question answered. Bold, 13px in charts.
+- Chart subtitle: defines population, time window, metric, denominator, and filters. --text-muted.
+- Caption/takeaway: explains why the viewer should care and what action may change. 12–13px, --text-muted.
+- Footnote: method, caveat, source, or definition detail. 12px, --text-muted, below the main content.
 
 Avoid using chart titles like "Revenue by Month" when a takeaway is available. Prefer "Revenue recovered after March outage but remains below Q4 baseline."
+
+Use uppercase letter-spacing for eyebrow labels and small category labels (`text-transform: uppercase; letter-spacing: 0.06em`). Do not uppercase body text, headings, or captions.
 
 ## Spacing And Layout
 
@@ -101,24 +215,28 @@ Rules:
 
 ## Color Usage Rules
 
-- Use neutral colors for most structure and text.
-- Reserve strong colors for status, alerts, highlights, or selected categories.
-- Keep categorical palettes small and consistent across pages.
+- Use the design token color system above, not BI tool defaults or matplotlib tab10.
+- Use `--text`, `--text-secondary`, and `--text-muted` for all text. Do not use pure black (`#000000`).
+- Use `--bg` for page backgrounds and `--surface` for card/panel backgrounds.
+- Use `--border` (`#e3e5e8`) for chart grid lines, card edges, and table borders.
+- Reserve `--accent` (`#2952c4`) for the most important data element per chart. One accent per chart.
+- Use the categorical sequence from the Design Token Reference. Apply colors in order, consistently.
+- Keep categorical palettes at 6 categories or fewer before grouping into "Other."
 - Do not change category colors between charts.
-- Avoid rainbow palettes and decorative gradients.
+- Avoid rainbow palettes, decorative gradients, and heavily saturated colors.
 - Use direct labels where legends become hard to scan.
 
 ## Semantic Color Rules
 
-If using semantic colors, keep meanings stable:
+Use `--positive`, `--warning`, and `--negative` for status encoding only. Do not use green or red for non-status purposes.
 
-- Green: favorable status, target met, improvement.
-- Red: risk, alert, target missed, harm, decline.
-- Amber/yellow: warning, needs review, incomplete.
-- Blue: neutral primary highlight or selected state.
-- Gray: baseline, inactive, missing, historical context.
+- Green (`--positive: #1d7d4c`): favorable status, target met, improvement.
+- Red (`--negative: #b72b2b`): risk, alert, target missed, harm, decline.
+- Amber (`--warning: #a05c0a`): needs review, incomplete, approaching threshold.
+- Blue (`--accent: #2952c4`): primary highlight, selected state, focus.
+- Gray (`--reference: #9ba5b2`): baseline, inactive, missing, historical context.
 
-Do not use red/green alone to convey meaning. Pair color with text, icons, labels, or patterns.
+Always pair semantic color with a text label, icon, or pattern. Do not rely on color alone.
 
 ## Accessibility And Contrast
 

@@ -14,6 +14,8 @@ Use markdown instead when the report is primarily a draft, notebook companion, o
 
 ## Copy-Paste HTML Skeleton
 
+The CSS below uses the canonical design tokens from `references/visual-report-design-system.md`. The report layout is intentionally narrower than a dashboard (860px max content width) to feel like a published document rather than a BI tool.
+
 ```html
 <!doctype html>
 <html lang="en">
@@ -22,284 +24,398 @@ Use markdown instead when the report is primarily a draft, notebook companion, o
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>[Report Title]</title>
   <style>
+    /* ── Design tokens ────────────────────────────────────────── */
     :root {
-      --font-sans: Arial, Helvetica, sans-serif;
-      --color-text: #1f2933;
-      --color-muted: #64748b;
-      --color-border: #d9e2ec;
-      --color-surface: #ffffff;
-      --color-background: #f6f8fb;
-      --color-primary: #1f6feb;
-      --color-positive: #16833a;
-      --color-warning: #b7791f;
-      --color-negative: #c62828;
-      --space-xs: 4px;
-      --space-sm: 8px;
-      --space-md: 16px;
-      --space-lg: 24px;
-      --space-xl: 36px;
-      --radius: 8px;
-      --max-width: 1120px;
+      /* Typography */
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+              "Helvetica Neue", Arial, sans-serif;
+      --font-mono: "SFMono-Regular", "Cascadia Mono", Menlo, Consolas,
+                   "Liberation Mono", monospace;
+
+      /* Surface */
+      --bg:            #f7f8f9;
+      --surface:       #ffffff;
+      --border:        #e3e5e8;
+      --border-strong: #c8cbd0;
+
+      /* Text */
+      --text:          #11141a;
+      --text-secondary:#4a5060;
+      --text-muted:    #848c9a;
+
+      /* Accent */
+      --accent:        #2952c4;
+      --accent-light:  #e8edfc;
+
+      /* Semantic */
+      --positive:      #1d7d4c;
+      --positive-bg:   #e8f7ee;
+      --warning:       #a05c0a;
+      --warning-bg:    #fef3e2;
+      --negative:      #b72b2b;
+      --negative-bg:   #fdeaea;
+
+      /* Layout */
+      --radius:        6px;
+      --shadow-sm:     0 1px 3px rgba(17, 20, 26, 0.07);
+      --content-width: 860px;   /* narrower = editorial feel */
+      --page-pad:      48px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    /* ── Reset ────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    img, svg { display: block; max-width: 100%; }
 
+    /* ── Base ─────────────────────────────────────────────────── */
     body {
       margin: 0;
-      font-family: var(--font-sans);
-      color: var(--color-text);
-      background: var(--color-background);
-      line-height: 1.5;
+      font-family: var(--font);
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
     }
 
+    /* ── Page shell ───────────────────────────────────────────── */
     .page {
-      max-width: var(--max-width);
+      max-width: var(--content-width);
       margin: 0 auto;
-      padding: var(--space-xl) var(--space-lg);
+      padding: 56px var(--page-pad) 80px;
     }
 
+    /* ── Header ───────────────────────────────────────────────── */
     header {
-      margin-bottom: var(--space-xl);
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--text);     /* strong top anchor line */
+      margin-bottom: 40px;
     }
 
     .eyebrow {
-      color: var(--color-muted);
-      font-size: 13px;
+      font-size: 12px;
+      font-weight: 500;
       text-transform: uppercase;
-      letter-spacing: .04em;
-      margin-bottom: var(--space-sm);
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
     }
 
     h1 {
       font-size: 34px;
+      font-weight: 700;
       line-height: 1.15;
-      margin: 0 0 var(--space-md);
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin: 0 0 16px;
     }
 
+    .meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Section headings ─────────────────────────────────────── */
     h2 {
       font-size: 22px;
-      margin: var(--space-xl) 0 var(--space-md);
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text);
+      margin: 56px 0 16px;   /* more space above than below */
     }
 
     h3 {
       font-size: 17px;
-      margin: 0 0 var(--space-sm);
+      font-weight: 600;
+      line-height: 1.4;
+      color: var(--text);
+      margin: 0 0 8px;
     }
 
-    p {
-      margin: 0 0 var(--space-md);
-    }
+    p { margin: 0 0 16px; }
+    ul, ol { margin: 0 0 16px; padding-left: 20px; }
+    li { margin-bottom: 6px; }
 
-    .meta {
-      color: var(--color-muted);
-      font-size: 14px;
-    }
-
+    /* ── Summary / callout block ──────────────────────────────── */
     .summary {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: var(--space-lg);
-      margin-bottom: var(--space-lg);
+      background: var(--accent-light);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 20px 24px;
+      margin-bottom: 40px;
     }
 
+    .summary h2 {
+      margin: 0 0 12px;
+      font-size: 17px;
+    }
+
+    /* ── KPI strip ────────────────────────────────────────────── */
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: var(--space-md);
-      margin-bottom: var(--space-lg);
+      gap: 16px;
+      margin-bottom: 40px;
     }
 
     .kpi {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: var(--space-md);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
     }
 
     .kpi-label {
-      color: var(--color-muted);
-      font-size: 13px;
-      margin-bottom: var(--space-xs);
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
     }
 
     .kpi-value {
-      font-size: 28px;
+      font-size: 30px;
       font-weight: 700;
-      margin-bottom: var(--space-xs);
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 4px;
     }
 
-    .kpi-note {
-      color: var(--color-muted);
+    .kpi-delta {
       font-size: 13px;
+      color: var(--text-muted);
     }
 
+    .kpi-delta.up   { color: var(--positive); }
+    .kpi-delta.down { color: var(--negative); }
+    .kpi-delta.warn { color: var(--warning); }
+
+    /* ── Section card ─────────────────────────────────────────── */
     .section {
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: var(--space-lg);
-      margin-bottom: var(--space-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
     }
 
+    .section h2 { margin-top: 0; }
+
+    /* ── Chart containers ─────────────────────────────────────── */
     .chart-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-lg);
+      gap: 20px;
     }
 
     .chart {
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: var(--space-md);
-      background: #fff;
+      border-top: 2px solid var(--border);   /* top accent only — editorial style */
+      padding-top: 14px;
     }
 
     .chart-title {
+      font-size: 13px;
       font-weight: 700;
-      margin-bottom: var(--space-xs);
+      color: var(--text);
+      margin-bottom: 3px;
     }
 
-    .chart-subtitle,
-    .caption {
-      color: var(--color-muted);
-      font-size: 13px;
+    .chart-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
     }
 
     .chart-placeholder {
-      min-height: 260px;
-      border: 1px dashed var(--color-border);
+      min-height: 240px;
+      border: 1px dashed var(--border);
       border-radius: var(--radius);
+      background: #fafbfc;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--color-muted);
-      margin: var(--space-md) 0;
+      color: var(--text-muted);
+      font-size: 13px;
       text-align: center;
-      padding: var(--space-md);
+      padding: 16px;
+      margin-bottom: 8px;
     }
 
+    .caption {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    /* ── Tables ───────────────────────────────────────────────── */
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
     }
 
-    th,
-    td {
-      border-bottom: 1px solid var(--color-border);
-      padding: 10px 8px;
+    th, td {
+      padding: 10px 10px;
+      border-bottom: 1px solid var(--border);
       text-align: left;
       vertical-align: top;
     }
 
     th {
-      color: var(--color-muted);
-      font-weight: 700;
-      background: #f8fafc;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      background: var(--bg);
     }
 
-    .status-positive { color: var(--color-positive); font-weight: 700; }
-    .status-warning { color: var(--color-warning); font-weight: 700; }
-    .status-negative { color: var(--color-negative); font-weight: 700; }
+    td:not(:first-child) { color: var(--text-secondary); }
+    tr:last-child td { border-bottom: none; }
 
-    @media (max-width: 820px) {
-      .kpi-grid,
-      .chart-grid {
-        grid-template-columns: 1fr;
-      }
+    /* ── Status utilities ─────────────────────────────────────── */
+    .status-positive { color: var(--positive); font-weight: 600; }
+    .status-warning  { color: var(--warning);  font-weight: 600; }
+    .status-negative { color: var(--negative); font-weight: 600; }
 
-      .page {
-        padding: var(--space-lg) var(--space-md);
-      }
+    .tag {
+      display: inline-block;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 600;
     }
 
+    .tag-positive { background: var(--positive-bg); color: var(--positive); }
+    .tag-warning  { background: var(--warning-bg);  color: var(--warning); }
+    .tag-negative { background: var(--negative-bg); color: var(--negative); }
+    .tag-neutral  { background: var(--bg);          color: var(--text-secondary); }
+
+    /* ── Divider ──────────────────────────────────────────────── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    /* ── Appendix ─────────────────────────────────────────────── */
+    .appendix {
+      border-top: 1px solid var(--border-strong);
+      margin-top: 64px;
+      padding-top: 32px;
+    }
+
+    .appendix h2 {
+      font-size: 17px;
+      margin-top: 0;
+      color: var(--text-secondary);
+    }
+
+    .appendix p, .appendix li {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 760px) {
+      :root { --page-pad: 20px; }
+      .kpi-grid, .chart-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 26px; }
+    }
+
+    /* ── Print / PDF ──────────────────────────────────────────── */
     @media print {
-      body {
-        background: #fff;
+      :root { --bg: #fff; }
+      body { background: #fff; font-size: 13px; }
+
+      .page { max-width: none; padding: 0; }
+
+      .section, .kpi, .summary { break-inside: avoid; box-shadow: none; }
+
+      .chart-placeholder {
+        background: #f9f9f9;
+        border-style: solid;
+        min-height: 180px;
       }
 
-      .page {
-        max-width: none;
-        padding: 0;
-      }
+      a { color: inherit; text-decoration: none; }
 
-      .section,
-      .summary,
-      .kpi,
-      .chart {
-        break-inside: avoid;
-        border-color: #cbd5e1;
-      }
-
-      a {
-        color: inherit;
-        text-decoration: none;
-      }
+      h2 { page-break-after: avoid; }
     }
   </style>
 </head>
 <body>
   <main class="page">
+
+    <!-- ── Header ─────────────────────────────────────────────── -->
     <header>
-      <div class="eyebrow">[Audience] • [Report date]</div>
+      <div class="eyebrow">[Audience] · [Report date] · [Status: Draft / Final]</div>
       <h1>[Takeaway-Oriented Report Title]</h1>
-      <p class="meta">Decision supported: [Decision] • Data freshness: [Latest data timestamp]</p>
+      <p class="meta">
+        Decision supported: [Decision] &nbsp;·&nbsp;
+        Data freshness: [Latest data timestamp] &nbsp;·&nbsp;
+        Owner: [Name]
+      </p>
     </header>
 
-    <section class="summary" aria-labelledby="executive-summary">
-      <h2 id="executive-summary">Executive Summary</h2>
+    <!-- ── Executive summary ──────────────────────────────────── -->
+    <section class="summary" aria-labelledby="exec-summary">
+      <h2 id="exec-summary">Summary</h2>
       <p><strong>Recommendation:</strong> [Recommended action and expected impact.]</p>
       <p><strong>Evidence:</strong> [One to three evidence points.]</p>
       <p><strong>Caveat:</strong> [Most decision-relevant limitation or uncertainty.]</p>
     </section>
 
-    <section aria-labelledby="key-metrics">
-      <h2 id="key-metrics">Key Metrics</h2>
+    <!-- ── KPI strip ───────────────────────────────────────────── -->
+    <section aria-label="Key metrics">
       <div class="kpi-grid">
         <article class="kpi">
           <div class="kpi-label">[Metric name]</div>
           <div class="kpi-value">[Value]</div>
-          <div class="kpi-note">[Change vs target/baseline]</div>
+          <div class="kpi-delta up">↑ [Change] vs [baseline/target]</div>
         </article>
         <article class="kpi">
           <div class="kpi-label">[Metric name]</div>
           <div class="kpi-value">[Value]</div>
-          <div class="kpi-note">[Change vs target/baseline]</div>
+          <div class="kpi-delta down">↓ [Change] vs [baseline/target]</div>
         </article>
         <article class="kpi">
           <div class="kpi-label">[Metric name]</div>
           <div class="kpi-value">[Value]</div>
-          <div class="kpi-note">[Change vs target/baseline]</div>
+          <div class="kpi-delta">[Comparison]</div>
         </article>
         <article class="kpi">
           <div class="kpi-label">[Metric name]</div>
           <div class="kpi-value">[Value]</div>
-          <div class="kpi-note">[Change vs target/baseline]</div>
+          <div class="kpi-delta warn">⚠ [Risk / threshold note]</div>
         </article>
       </div>
     </section>
 
+    <!-- ── Visual story ────────────────────────────────────────── -->
     <section class="section" aria-labelledby="visual-story">
       <h2 id="visual-story">Visual Story</h2>
       <div class="chart-grid">
         <article class="chart">
-          <div class="chart-title">[Insight title, not chart type]</div>
-          <div class="chart-subtitle">[Metric, population, time window, filters]</div>
-          <div class="chart-placeholder">Insert chart image, SVG, table, or embedded static visual here.</div>
-          <p class="caption">[Caption as takeaway: implication, caveat, next action.]</p>
+          <div class="chart-title">[Finding, not chart type]</div>
+          <div class="chart-subtitle">[Metric · Population · Time window · Filters]</div>
+          <div class="chart-placeholder">Insert chart image, SVG, or embedded output.</div>
+          <p class="caption">[Takeaway: what changed, for whom, what it means, caveat.]</p>
         </article>
         <article class="chart">
-          <div class="chart-title">[Insight title, not chart type]</div>
-          <div class="chart-subtitle">[Metric, population, time window, filters]</div>
-          <div class="chart-placeholder">Insert chart image, SVG, table, or embedded static visual here.</div>
-          <p class="caption">[Caption as takeaway: implication, caveat, next action.]</p>
+          <div class="chart-title">[Finding, not chart type]</div>
+          <div class="chart-subtitle">[Metric · Population · Time window · Filters]</div>
+          <div class="chart-placeholder">Insert chart image, SVG, or embedded output.</div>
+          <p class="caption">[Takeaway: what changed, for whom, what it means, caveat.]</p>
         </article>
       </div>
     </section>
 
+    <!-- ── Findings table ──────────────────────────────────────── -->
     <section class="section" aria-labelledby="findings">
       <h2 id="findings">Findings</h2>
       <table>
@@ -313,29 +429,39 @@ Use markdown instead when the report is primarily a draft, notebook companion, o
         </thead>
         <tbody>
           <tr>
-            <td>[Finding]</td>
-            <td>[Metric/chart/table]</td>
+            <td>[Finding headline]</td>
+            <td>[Metric, chart, or table reference]</td>
             <td>[Decision implication]</td>
-            <td>[Uncertainty or limitation]</td>
+            <td>[Uncertainty, limitation, or sample note]</td>
           </tr>
         </tbody>
       </table>
     </section>
 
+    <!-- ── Limitations ─────────────────────────────────────────── -->
     <section class="section" aria-labelledby="limitations">
       <h2 id="limitations">Limitations</h2>
       <ul>
-        <li>[Data coverage limitation]</li>
+        <li>[Data coverage or freshness limitation]</li>
         <li>[Metric or method limitation]</li>
         <li>[Uncertainty or sample-size limitation]</li>
       </ul>
     </section>
 
+    <!-- ── Recommendations ─────────────────────────────────────── -->
     <section class="section" aria-labelledby="recommendations">
       <h2 id="recommendations">Recommendations</h2>
-      <p><strong>Next action:</strong> [Specific owner, action, and timing.]</p>
-      <p><strong>Measurement plan:</strong> [How impact will be checked.]</p>
+      <p><strong>Next action:</strong> [Owner · Action · Timing]</p>
+      <p><strong>Expected impact:</strong> [Quantified or directional estimate]</p>
+      <p><strong>Measurement plan:</strong> [How and when to evaluate impact]</p>
     </section>
+
+    <!-- ── Appendix ────────────────────────────────────────────── -->
+    <aside class="appendix" aria-labelledby="appendix">
+      <h2 id="appendix">Appendix</h2>
+      <p>[Data definitions, query logic, method details, sensitivity checks, full tables, and diagnostic visuals.]</p>
+    </aside>
+
   </main>
 </body>
 </html>
