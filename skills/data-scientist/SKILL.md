@@ -219,6 +219,7 @@ Load only the files needed for the task:
 - `references/metrics-guide.md`: choose metrics by model family and business cost.
 - `references/diagnostics-guide.md`: diagnose model behavior, data quality, and failures.
 - Other `references/` files: detailed guidance on feature engineering, visualization, interpretation, reporting, responsible AI, production, experiments, data contracts, monitoring, causal analysis, and decision science.
+- `design-systems/`: optional visual direction presets for dashboards and reports — choose a system before generating stakeholder-facing visual output; route through `workflow/design-preflight.md`. Default: `clean-saas-analytics` for dashboards, `executive-editorial` for reports.
 - `references/design-craft-guide.md`: craft principles for professional, editorial-quality visual output — AI fingerprints to avoid, typography, space, color discipline, chart polish, and direct label patterns.
 - `references/chart-style-system.md`: ready-to-paste Python (matplotlib/seaborn/Plotly) and R (ggplot2) house style configurations, color palette constants, figure size standards, and export settings.
 - `references/visual-report-design-system.md`: design token reference (hex values, type scale, spacing scale, color palette, chart categorical sequence) and layout/structure standards.

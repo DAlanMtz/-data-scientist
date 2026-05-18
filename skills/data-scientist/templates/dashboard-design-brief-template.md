@@ -36,6 +36,17 @@ Select one primary archetype from `templates/dashboards/`. Borrow sections from 
 | Alert, anomaly, exception triage | `templates/dashboards/anomaly-monitoring-dashboard-template.md` |
 | Static dashboard prototype | `templates/dashboards/html-dashboard-starter-template.md` |
 
+## Visual Direction / Design System
+
+Choose a design system from `design-systems/README.md`. If no preference is stated, apply the default: `clean-saas-analytics` for dashboards, `executive-editorial` for stakeholder reports.
+
+For upstream scoping of audience, decision, metric definitions, and data grain before filling this brief, use `templates/dashboard-discovery-brief-template.md`.
+
+- **Selected design system:** `[clean-saas-analytics / executive-editorial / operational-command-center / research-paper / financial-terminal / warm-narrative / no preference]`
+- **Visual density preference:** `[high / medium / low]`
+- **Brand constraints or overrides (colors, fonts, logo):**
+- **Accessibility requirements:**
+
 ## Primary KPIs
 
 | KPI | Definition | Grain | Target/baseline | Refresh | Owner |

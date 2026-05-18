@@ -30,3 +30,20 @@ Use this library when the user asks to design, generate, review, or prototype a 
 - If the dashboard is already built, start with `templates/dashboard-qa-checklist-template.md`.
 - If the output is a static stakeholder deliverable rather than an operating dashboard, use `templates/visual-report-template.md` or `templates/html-report-template.md`.
 - If multiple templates apply, use one primary template and borrow sections from the others. Do not overload one dashboard with every view.
+
+## Visual Direction
+
+Dashboard archetypes define the **structure and content** of a dashboard — what sections to include, what questions to answer, what data to surface. Design systems define the **visual personality** — typography, color, spacing, and chart style.
+
+Choose a design system from `design-systems/README.md` after selecting the archetype. The two decisions are independent.
+
+| Design system | Best for |
+| --- | --- |
+| `clean-saas-analytics` | General analytics dashboards (default) |
+| `executive-editorial` | Stakeholder reports, print/PDF output |
+| `operational-command-center` | Monitoring, alerting, incident dashboards (dark mode) |
+| `research-paper` | Academic reports, methodology writeups |
+| `financial-terminal` | Finance, risk, trading dashboards (dark mode) |
+| `warm-narrative` | Explanatory reports, non-technical audiences |
+
+Each system's `DESIGN.md` is standalone — it contains the full token summary, chart style overrides, and format-specific guidance. Apply it directly without reading any other file.

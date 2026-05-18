@@ -4,6 +4,8 @@ Use this system to produce charts that look like professional data journalism ra
 
 Override the palette or font when the user has a brand system. The structure and removal of defaults should remain regardless.
 
+Chart polish rules (spine removal, grid weight, direct labels, export dpi) apply regardless of which design system is active. When a `design-systems/<name>/DESIGN.md` is selected, its `chart_grid`, `muted_fill`, `categorical_palette`, `accent_primary`, and `font_stack` tokens may adapt the chart style — override the corresponding `HOUSE_RCPARAMS` values accordingly. The structural rules do not change.
+
 ---
 
 ## Design Token Reference

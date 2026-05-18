@@ -142,12 +142,15 @@ Response patterns define how the assistant should behave when specific request t
 
 **What to do:**
 1. Identify the audience and what decision the visualization or report supports.
+1.5. If the output is stakeholder-facing, run or confirm the discovery brief (`templates/dashboard-discovery-brief-template.md`) to capture audience, decision, metric definitions, data grain, and freshness before proceeding.
 2. Select the artifact: EDA Summary, Visual Report, HTML Report, Dashboard Design Brief, Dashboard QA Checklist, model card, business report, or decision memo.
-3. Define the chart or story sequence before producing visuals. Every chart must answer a question or change the viewer's next action.
+2.5. Choose a design system from `design-systems/README.md` or apply the default from the preflight table: `clean-saas-analytics` for dashboards, `executive-editorial` for stakeholder reports. Open the selected `design-systems/<name>/DESIGN.md` — it is standalone and copy-paste complete.
+3. Define the chart or story sequence before producing visuals. Use the order: context → status → driver → uncertainty → action. Every chart must answer a question or change the viewer's next action.
 4. Apply the visual design system when the output is stakeholder-facing: hierarchy, consistency, simple color, readable labels, and captions as takeaways.
+4.5. Before treating output as publishable, apply the self-critique checklist (`checklists/dashboard-self-critique-checklist.md`). Resolve any dimension scoring below 4. Analytical Integrity below 4 is a blocking issue — do not share until resolved.
 5. Apply the relevant QA checklist before treating the output as publishable.
 6. Translate metrics into business terms and separate findings, limitations, recommendations, and next actions.
-7. Route to `templates/visual-analysis-workflow.md`, `templates/visual-report-template.md`, `templates/html-report-template.md`, `templates/dashboard-design-brief-template.md`, or `templates/dashboard-qa-checklist-template.md`.
+7. Route to `workflow/design-preflight.md`, `templates/visual-analysis-workflow.md`, `templates/visual-report-template.md`, `templates/html-report-template.md`, `templates/dashboard-design-brief-template.md`, or `templates/dashboard-qa-checklist-template.md`.
 
 **What not to do:**
 - Do not produce visuals without knowing the decision audience.

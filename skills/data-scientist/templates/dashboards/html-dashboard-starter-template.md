@@ -15,6 +15,9 @@ The CSS below uses the canonical design tokens from `references/visual-report-de
   <title>[Dashboard Name]</title>
   <style>
     /* ── Design tokens ────────────────────────────────────────── */
+    /* CSS tokens below follow the clean-saas-analytics design system (default).
+       To change visual direction, replace token values with those from
+       design-systems/<name>/DESIGN.md — see design-systems/README.md for the chooser. */
     :root {
       --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
               "Helvetica Neue", Arial, sans-serif;

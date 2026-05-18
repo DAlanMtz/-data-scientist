@@ -43,10 +43,10 @@ One-page map of the full lifecycle. Use this to orient quickly: find the stage, 
 | "Is this feature leaking?" | Stage 1 or 3 | Check `validation-and-leakage-checklist.md`; update Data Audit |
 | "Which model should I use?" | Stage 3 or 5 | Confirm Validation Gate passed; open `modeling-plan-template.md` |
 | "How do I evaluate performance?" | Stage 3 or 7 | Open `validation-plan-template.md` or `decision-memo-template.md` |
-| "Make this into a stakeholder visual report" | Stage 8 | Open `visual-report-template.md`; use `visual-report-checklist.md` |
-| "Design a dashboard" | Stage 8, 9, or 10 | Open `dashboard-design-brief-template.md`; define decisions, metrics, grain, and refresh |
-| "QA this dashboard before publishing" | Stage 8, 9, or 10 | Open `dashboard-qa-checklist-template.md`; use `dashboard-qa-checklist.md` |
-| "Create a polished HTML/PDF report" | Stage 8 | Open `html-report-template.md`; apply `visual-report-checklist.md` |
+| "Make this into a stakeholder visual report" | Stage 8 | Run `workflow/design-preflight.md` (Steps 1–5 minimum); open `visual-report-template.md`; use `visual-report-checklist.md` |
+| "Design a dashboard" | Stage 8, 9, or 10 | Run `workflow/design-preflight.md` (full 11 steps); open `dashboard-design-brief-template.md`; define decisions, metrics, grain, and refresh |
+| "QA this dashboard before publishing" | Stage 8, 9, or 10 | Open `dashboard-qa-checklist-template.md`; use `dashboard-qa-checklist.md`; apply `checklists/dashboard-self-critique-checklist.md` |
+| "Create a polished HTML/PDF report" | Stage 8 | Run `workflow/design-preflight.md` (Steps 1–5 minimum); open `html-report-template.md`; apply `visual-report-checklist.md` |
 | "Is this ready to deploy?" | Stage 9 | Open `deployment-readiness-report-template.md`; check Production Gate |
 | "Something seems off in production" | Stage 10 | Open `monitoring-plan-template.md`; apply `severity-levels.md` |
 | "Can we skip this check?" | Any gated stage | Open `rationalization-guardrails.md`; require minimum evidence |

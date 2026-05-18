@@ -25,6 +25,9 @@ The CSS below uses the canonical design tokens from `references/visual-report-de
   <title>[Report Title]</title>
   <style>
     /* ── Design tokens ────────────────────────────────────────── */
+    /* CSS tokens below follow the executive-editorial design system (default for
+       stakeholder reports). To change visual direction, replace token values with
+       those from design-systems/<name>/DESIGN.md — see design-systems/README.md. */
     :root {
       /* Typography */
       --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",

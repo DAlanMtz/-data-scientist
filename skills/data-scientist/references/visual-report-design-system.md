@@ -6,6 +6,8 @@ The design principle is decision-first: the layout should make the supported dec
 
 For the craft layer — what makes output look AI-generated vs. professionally crafted — see `references/design-craft-guide.md`. For ready-to-paste Python and R chart style code, see `references/chart-style-system.md`.
 
+The base token system defined here is the default for all dashboards and reports. For stronger visual direction, optional design system presets are available in `design-systems/`. Each preset is a complete, standalone token override — apply one in full or use this base system. If no design system is specified, this base system applies.
+
 ---
 
 ## Design Token Reference

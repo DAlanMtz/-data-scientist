@@ -40,8 +40,9 @@ skills/data-scientist/
 ├── prompts/                Copy-paste prompts that activate disciplined agent behavior
 ├── evals/                  Behavioral eval prompts and expected behavior checks
 ├── references/             Senior data science methodology, judgment, and domain guides
-├── templates/              Reusable deliverable and workflow templates (37 files)
-├── checklists/             Audit and quality-control checklists (13 files)
+├── design-systems/         Optional visual direction presets for dashboards and reports; choose one per project or use the default
+├── templates/              Reusable deliverable and workflow templates
+├── checklists/             Audit and quality-control checklists
 └── examples/               Python, R, SQL, and Excel/Sheets implementation examples
 ```
 
