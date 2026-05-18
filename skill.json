@@ -1,7 +1,7 @@
 {
   "name": "data-scientist",
   "title": "Data Scientist",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A universal senior data scientist skill for data mining, model building, validation, interpretation, responsible AI, and production-readiness.",
   "entrypoint": "skills/data-scientist/SKILL.md",
   "tags": [
