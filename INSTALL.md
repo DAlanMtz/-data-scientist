@@ -123,7 +123,8 @@ skills/data-scientist/
 ├── checklists/                       ← Audit and quality-control checklists
 ├── examples/                         ← Python, R, SQL, Excel examples
 └── subskills/
-    └── dashboard-designer/           ← Sub-skill for HTML dashboard generation: CSS token setup, component recipes (KPI strip, chips, heatmap, comparison table, appendix), archetype layouts, and assembly guide
+    ├── dashboard-designer/           ← Sub-skill for HTML dashboard generation: CSS token setup, component recipes (KPI strip, chips, heatmap, comparison table, appendix), archetype layouts, and assembly guide
+    └── model-auditor/                ← Sub-skill for auditing models, notebooks, backtests, experiments, and model claims
 ```
 
 ---

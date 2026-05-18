@@ -31,6 +31,7 @@ Use this skill when you need an AI agent to reason and act like a senior data sc
 - Visual reports, dashboard design briefs, dashboard QA, and HTML/PDF-ready reporting
 - Dashboard template library for analytics, executive KPI, model performance, forecasting, cohort retention, anomaly monitoring, and HTML prototypes
 - Stakeholder-facing HTML dashboard generation via the included `dashboard-designer` sub-skill (component recipes, archetype layouts, token setup, and assembly guide)
+- Model auditing via the included `model-auditor` sub-skill (leakage, validation design, metrics, calibration, production readiness, and release decisions)
 
 ## Repository Map
 
@@ -46,7 +47,8 @@ skills/data-scientist/
 ├── checklists/             Audit and quality-control checklists
 ├── examples/               Python, R, SQL, and Excel/Sheets implementation examples
 └── subskills/
-    └── dashboard-designer/ Copy-paste HTML/CSS component recipes, archetype layouts, and assembly guide for stakeholder-facing dashboards
+    ├── dashboard-designer/ Copy-paste HTML/CSS component recipes, archetype layouts, and assembly guide for stakeholder-facing dashboards
+    └── model-auditor/          Sub-skill for auditing models, notebooks, backtests, experiments, and model claims
 ```
 
 ## Workflow Discipline

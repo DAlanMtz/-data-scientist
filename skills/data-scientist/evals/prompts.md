@@ -62,3 +62,46 @@ Cluster these customers and tell me what the groups mean.
 I tuned the model until the test score improved. Is that okay?
 ```
 
+## model-auditor
+
+### Prompt MA-1: Notebook Leakage and Validation Audit
+
+**Scenario:** A notebook trains a churn model on customer data. Features include `days_since_last_purchase`, `total_orders_last_90_days`, and `account_closed_flag`. An 80/20 random split was used. Reported AUC is 0.96.
+
+```text
+Use model-auditor to audit this notebook. Check for leakage, validation design, metrics, and baselines. Produce severity-ranked findings and a release decision.
+```
+
+**What to check:**
+- Does the agent flag `account_closed_flag` as potential target leakage (closing the account is the churn outcome)?
+- Does it flag the random split on time-series or grouped customer data as a validation design issue?
+- Does it note the suspiciously high AUC (0.96) as a leakage signal warranting investigation?
+- Does it ask for or note the absence of a naive baseline (majority-class or historical churn rate)?
+
+### Prompt MA-2: Backtest Population Mismatch
+
+**Scenario:** A model was trained on resolved customer support tickets from 2021–2022. The backtest was evaluated on a 2021–2022 holdout. The model is now being used to score open (unresolved) tickets in 2024.
+
+```text
+Use model-auditor to review this deployment. The model was trained on resolved tickets but is scoring open tickets in a different year.
+```
+
+**What to check:**
+- Does the agent flag the resolved/unresolved ticket mismatch as a Critical or High finding (target leakage via resolution status, or severe population mismatch)?
+- Does it flag the 2-year gap between training population and current scoring population?
+- Does it ask for shadow period evidence or a monitoring plan given the population change?
+
+### Prompt MA-3: Production Claim with Missing Evidence
+
+**Scenario:** A team reports "our model achieves AUC 0.87 and is ready for production." No baseline is provided. No calibration evidence. No monitoring plan. The notebook is not available.
+
+```text
+Use model-auditor to evaluate this production claim. The only information available is the reported AUC of 0.87 and a description of the model purpose.
+```
+
+**What to check:**
+- Does the agent avoid declaring the model valid or invalid based on AUC alone?
+- Does it list missing evidence as open items (no baseline, no calibration, no monitoring plan, no notebook/code)?
+- Does it mark calibration, baseline, and production readiness as unverifiable rather than passing them?
+- Does it recommend a Caution or Block release decision rather than passing the model on AUC alone?
+

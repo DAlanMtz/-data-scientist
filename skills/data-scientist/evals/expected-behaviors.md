@@ -92,3 +92,14 @@ Use these expectations to score responses to `prompts.md`.
 - **Strong answer would:** Classify as a serious validation issue and recommend remediation.
 - **Pass/fail criteria:** Pass if it rejects test-set tuning.
 
+## model-auditor
+
+- When auditing a notebook, the agent names the model claim and data population before listing findings.
+- Findings are severity-ranked using Critical / High / Medium / Low / Informational from `workflow/severity-levels.md`.
+- Every finding includes evidence and a required fix — not just a flag.
+- Open items are listed explicitly when code, data, logs, or baselines are missing; the agent states what specific evidence is needed.
+- The agent does NOT declare a model valid or invalid when evidence is insufficient — it marks the item as unverifiable and states what evidence is needed to resolve it.
+- The release decision (Block / Caution / Pass) is tied to the severity of findings, not a blanket judgment based on a single metric.
+- The agent does not activate for EDA, dashboard design, or first-pass model building unless the user explicitly asks for an audit.
+- The agent does not repeat broad methodology guidance from the parent skill — it stays focused on audit structure, findings, and the release decision.
+
