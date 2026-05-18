@@ -1,6 +1,6 @@
 # Data Scientist Skill
 
-**Version:** 1.0.0 | **Status:** Ready to use | **License:** MIT
+**Version:** 1.1.0 | **Status:** Ready to use | **License:** MIT
 
 A universal senior data scientist skill for AI agents. Covers the full data science lifecycle — from problem framing through production monitoring — across Python, R, SQL, Excel/Sheets, notebooks, and production pipelines.
 
