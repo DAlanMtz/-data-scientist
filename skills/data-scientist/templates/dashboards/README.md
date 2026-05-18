@@ -47,3 +47,9 @@ Choose a design system from `design-systems/README.md` after selecting the arche
 | `warm-narrative` | Explanatory reports, non-technical audiences |
 
 Each system's `DESIGN.md` is standalone — it contains the full token summary, chart style overrides, and format-specific guidance. Apply it directly without reading any other file.
+
+## Component Recipes
+
+The templates in this folder define dashboard **intent**: what sections to include, what questions to answer, and what data to surface. They are tool-flexible and format-agnostic.
+
+For copy-paste-complete **HTML/CSS component recipes** — KPI strip, status chips, metric color cells, verdict bands, stability heatmaps, comparison tables, and collapsible appendix patterns — use `subskills/dashboard-designer/`. The sub-skill also provides opinionated archetype layouts and an assembly guide that maps design-preflight outputs into finished dashboard structure.

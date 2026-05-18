@@ -58,7 +58,7 @@ Claude Code can use this skill as a project instruction source:
 3. Tell Claude Code: *"Read SKILL.md first, then use workflow/stage-index.md to orient the current work."*
 4. Start with `prompts/quickstart-prompts.md` for common audit, modeling, validation, reporting, and production-readiness prompts.
 5. Use `workflow/definition-of-done.md` before declaring a deliverable complete.
-6. For visual reports or dashboards, start with `templates/visual-analysis-workflow.md`, then route to the visual report, HTML report, dashboard design brief, or dashboard QA template.
+6. For visual reports or dashboards, start with `templates/visual-analysis-workflow.md`, then route to the visual report, HTML report, dashboard design brief, or dashboard QA template. For stakeholder-facing HTML dashboard generation, use `subskills/dashboard-designer/` after completing the design preflight.
 7. Supporting files under `workflow/`, `prompts/`, `evals/`, `references/`, `templates/`, `checklists/`, and `examples/` will be referenced on demand.
 
 ```bash
@@ -121,7 +121,9 @@ skills/data-scientist/
 ├── design-systems/                   ← Optional visual direction presets; apply one to adapt typography, color, spacing, and chart style to the project context
 ├── templates/                        ← Reusable deliverable and workflow templates
 ├── checklists/                       ← Audit and quality-control checklists
-└── examples/                         ← Python, R, SQL, Excel examples
+├── examples/                         ← Python, R, SQL, Excel examples
+└── subskills/
+    └── dashboard-designer/           ← Sub-skill for HTML dashboard generation: CSS token setup, component recipes (KPI strip, chips, heatmap, comparison table, appendix), archetype layouts, and assembly guide
 ```
 
 ---

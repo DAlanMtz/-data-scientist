@@ -30,6 +30,7 @@ Use this skill when you need an AI agent to reason and act like a senior data sc
 - Reporting and stakeholder communication
 - Visual reports, dashboard design briefs, dashboard QA, and HTML/PDF-ready reporting
 - Dashboard template library for analytics, executive KPI, model performance, forecasting, cohort retention, anomaly monitoring, and HTML prototypes
+- Stakeholder-facing HTML dashboard generation via the included `dashboard-designer` sub-skill (component recipes, archetype layouts, token setup, and assembly guide)
 
 ## Repository Map
 
@@ -43,7 +44,9 @@ skills/data-scientist/
 ├── design-systems/         Optional visual direction presets for dashboards and reports; choose one per project or use the default
 ├── templates/              Reusable deliverable and workflow templates
 ├── checklists/             Audit and quality-control checklists
-└── examples/               Python, R, SQL, and Excel/Sheets implementation examples
+├── examples/               Python, R, SQL, and Excel/Sheets implementation examples
+└── subskills/
+    └── dashboard-designer/ Copy-paste HTML/CSS component recipes, archetype layouts, and assembly guide for stakeholder-facing dashboards
 ```
 
 ## Workflow Discipline

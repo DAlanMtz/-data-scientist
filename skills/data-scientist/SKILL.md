@@ -233,3 +233,4 @@ Load only the files needed for the task:
 - `examples/`: language- and tool-specific examples for Python, R, SQL, and Excel/Sheets patterns.
 - `prompts/`: copy-paste prompts that activate stage, gate, artifact, and next-action discipline.
 - `evals/`: lightweight behavioral test prompts and expected behaviors for future skill edits.
+- `subskills/dashboard-designer/`: for stakeholder-facing HTML dashboard generation, redesign, polish, or QA — invoke after completing design preflight in this skill. Provides copy-paste component recipes, archetype layouts, and assembly guidance. See `subskills/dashboard-designer/SKILL.md` for trigger conditions.
