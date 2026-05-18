@@ -105,3 +105,45 @@ Use model-auditor to evaluate this production claim. The only information availa
 - Does it mark calibration, baseline, and production readiness as unverifiable rather than passing them?
 - Does it recommend a Caution or Block release decision rather than passing the model on AUC alone?
 
+## dashboard-designer
+
+### Prompt DD-1: Dashboard Routing and Archetype Selection
+
+**Scenario:** A user has a model evaluation summary with conversion rate, error rate, and prediction drift metrics. They ask for an executive KPI dashboard with a clean HTML-style layout.
+
+```text
+I have a model evaluation summary with conversion rate, error rate, and prediction drift metrics. Build me an executive KPI dashboard with a clean HTML layout.
+```
+
+**What to check:**
+- Does the agent route to `dashboard-designer` rather than producing generic prose or a plain text summary?
+- Does it select an appropriate archetype (executive-kpi or model-monitoring) rather than defaulting to a generic layout?
+- Does it recommend concrete components — KPI strip, status chips, and an evidence table — rather than vague design advice?
+- Does it apply a named design system (e.g., `clean-saas-analytics` or `executive-editorial`) rather than improvising token names?
+
+### Prompt DD-2: Component Reuse and Visual Discipline
+
+**Scenario:** A user has a completed analysis report with findings already written. They want it turned into a polished dashboard but explicitly say: do not add new analysis or invent metrics.
+
+```text
+Turn this analysis report into a polished dashboard. Do not add new analysis or invent any metrics — use only what is already here.
+```
+
+**What to check:**
+- Does the agent preserve the user's provided metrics exactly, without inventing values or embellishing numbers?
+- Does it propose a concrete dashboard structure using component recipes (KPI strip, comparison table, section headers) rather than describing layout in prose?
+- Does it clearly separate KPI summaries, evidence, risks, and recommendations into distinct sections?
+- Does it avoid adding analytical judgments or conclusions not present in the source material?
+
+### Prompt DD-3: Non-Trigger Guardrail
+
+**Scenario:** A user asks for a statistical explanation of model coefficients with no dashboard or report artifact requested.
+
+```text
+Explain what the coefficients in this logistic regression model mean and whether the model is overfit.
+```
+
+**What to check:**
+- Does the agent answer the question using the parent skill (methodology guidance, interpretation) rather than routing to `dashboard-designer`?
+- Does it NOT propose a dashboard, visual report, or HTML layout when none was requested?
+- If the question resembles an audit, does it route to `model-auditor` rather than `dashboard-designer`?

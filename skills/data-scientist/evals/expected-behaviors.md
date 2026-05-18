@@ -103,3 +103,13 @@ Use these expectations to score responses to `prompts.md`.
 - The agent does not activate for EDA, dashboard design, or first-pass model building unless the user explicitly asks for an audit.
 - The agent does not repeat broad methodology guidance from the parent skill — it stays focused on audit structure, findings, and the release decision.
 
+## dashboard-designer
+
+- The agent activates `dashboard-designer` only when the task involves producing a visual artifact: an HTML dashboard, a visual report, a dashboard design brief, or a stakeholder-facing layout. It does not activate for EDA, model auditing, statistical explanation, or notebook review.
+- When routing to `dashboard-designer`, the agent selects a named archetype (analytical-research, executive-kpi, or model-monitoring) rather than proposing a generic layout.
+- The agent applies a named design system token set (e.g., `clean-saas-analytics`) and uses its defined CSS custom property names — it does not improvise token names like `--ink`, `--panel`, `--muted`, or `--card-bg`.
+- The agent uses component-level recipes (KPI strip, status chips, metric color cells, comparison table, stability heatmap, collapsible appendix) rather than describing layout intent in prose.
+- The agent preserves the user's provided metrics exactly. It does not invent numbers, embellish values, or add analytical conclusions not present in the source material.
+- The agent clearly separates KPI summaries, evidence tables, risk indicators, and recommendations into distinct dashboard sections. It does not combine findings and recommendations into a single block of prose.
+- The agent does not activate `dashboard-designer` when the user asks to audit a model, explain a statistical concept, or run a modeling workflow. Those tasks route to the parent skill or `model-auditor`.
+- Dashboard output is implementation-ready: it includes actual HTML/CSS structure or explicit component assembly steps, not a description of what the dashboard should look like.
