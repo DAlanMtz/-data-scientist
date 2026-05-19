@@ -133,6 +133,33 @@ A dashboard produced with this sub-skill must meet:
 - Applying a design system token set but keeping the wrong font or radius.
 - Generating a dashboard that passes visual inspection but fails Analytical Integrity (metric definitions missing, denominators not stated, cherry-picked date ranges).
 
+## Template Library
+
+Reusable HTML/CSS reference templates are in `templates/dashboards/`. Choose the template family that matches the user's use case, then adapt copy and metrics.
+
+**Family routing:**
+
+| Use case | Template family |
+|---|---|
+| Research evaluation, analytical investigation, benchmark comparison, segment evidence, readiness | `analytical-research-dashboard` |
+| Executive KPI, leadership summary, target tracking, business drivers, risk/opportunity | `executive-kpi-dashboard` |
+| Deployed model health, alerts, performance trend, data quality, drift, calibration, retraining | `model-monitoring-dashboard` |
+| A/B test, holdout, treatment/control comparison, guardrails, rollout/continue/stop decision | `experiment-ab-test-dashboard` |
+| Data quality, source readiness, validation checks, completeness, freshness, remediation | `data-quality-audit-dashboard` |
+| Forecast, scenario planning, uncertainty range, planning window, assumptions, backtest accuracy | `forecast-planning-dashboard` |
+
+**Full vs compact:**
+- Use the **full** variant when the user asks for a complete dashboard, deep review, appendix, diagnostics, or production-ready reference.
+- Use the **compact** variant when the user asks for an overview, one-screen summary, executive view, triage, or constrained space.
+
+**Do not mix archetype language:**
+- Model monitoring should not sound like research evaluation.
+- A/B test should clearly show treatment/control and guardrails.
+- Data quality should show readiness and remediation, not model performance.
+- Forecast planning should show uncertainty, scenarios, assumptions, and planning action — not model accuracy metrics.
+
+See `templates/dashboards/README.md` for the full template catalog and shared standards.
+
 ## Parent Files Referenced
 
 This sub-skill depends on but does not own:

@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Model Monitoring Dashboard · Compact Reference Template</title>
+  <style>
+    /* ════════════════════════════════════════════════════════════════════
+       TOKENS — Dark dashboard family. Bind to your brand here.
+       ════════════════════════════════════════════════════════════════════ */
+    :root {
+      /* Surface */
+      --bg:            #0a0a10;
+      --surface:       #14141e;
+      --surface-raised:#1b1b28;
+      --surface-wash:  #101018;
+
+      /* Foreground ramp */
+      --fg:            #eaeaef;
+      --fg-2:          #b8b8c4;
+      --muted:         #7e7e8e;
+      --meta:          #555562;
+
+      /* Border */
+      --border:        #1e1e2c;
+      --border-soft:   #171723;
+
+      /* Accent — warm amber/gold */
+      --accent:        #c8960c;
+      --accent-soft:   color-mix(in oklch, var(--accent) 18%, transparent);
+      --accent-hover:  #d9a61a;
+      --accent-glow:   color-mix(in oklch, var(--accent) 35%, transparent);
+
+      /* Semantic */
+      --success:       #2ea85a;
+      --warn:          #c8960c;
+      --danger:        #d44a3a;
+      --info:          #4a8fd4;
+
+      --success-soft:  color-mix(in oklch, var(--success) 14%, transparent);
+      --warn-soft:     color-mix(in oklch, var(--warn) 14%, transparent);
+      --danger-soft:   color-mix(in oklch, var(--danger) 14%, transparent);
+      --info-soft:     color-mix(in oklch, var(--info) 14%, transparent);
+
+      /* Typography */
+      --font-display:  'Iowan Old Style', Charter, Georgia, 'Times New Roman', serif;
+      --font-body:     -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono:     ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      --text-xs:       11px;
+      --text-sm:       13px;
+      --text-base:     14px;
+      --text-lg:       17px;
+      --text-xl:       21px;
+      --text-2xl:      26px;
+      --text-3xl:      34px;
+
+      --leading-body:  1.5;
+      --leading-tight: 1.15;
+
+      /* Spacing */
+      --space-1:       4px;
+      --space-2:       8px;
+      --space-3:       12px;
+      --space-4:       16px;
+      --space-5:       20px;
+      --space-6:       24px;
+
+      /* Radius */
+      --radius-sm:     6px;
+      --radius-md:     8px;
+
+      /* Layout */
+      --container-max: 1160px;
+      --gutter:        24px;
+
+      /* Motion */
+      --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+      /* Compact-specific tokens */
+      --section-gap:   20px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESET & BASE
+       ════════════════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: var(--space-5);
+    }
+    .container {
+      max-width: var(--container-max);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       1. COMPACT MODEL IDENTITY HEADER
+       ════════════════════════════════════════════════════════════════════ */
+    .model-header {
+      border-bottom: 1px solid var(--border);
+      padding-block: var(--space-3);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .model-header-main {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+    .model-name {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      white-space: nowrap;
+    }
+    .model-name span { color: var(--accent); }
+    .model-version-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .version-tag {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .version-tag-candidate {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid color-mix(in oklch, var(--accent) 30%, transparent);
+    }
+    .version-tag-baseline {
+      background: var(--surface-wash);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .model-header-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      font-size: var(--text-xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.03em;
+    }
+    .model-header-meta strong {
+      color: var(--fg-2);
+      font-weight: 500;
+    }
+    .model-freshness {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .model-freshness-fresh {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       2. ALERT STRIP
+       ════════════════════════════════════════════════════════════════════ */
+    .alert-strip {
+      margin-top: var(--space-3);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      background: var(--warn-soft);
+      border-left: 4px solid var(--warn);
+    }
+    .alert-status-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .alert-pill {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      flex-shrink: 0;
+      background: var(--warn);
+      color: var(--bg);
+    }
+    .alert-message {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      min-width: 0;
+    }
+    .alert-action-label {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--fg);
+      max-width: 52ch;
+    }
+    .alert-detail {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      font-family: var(--font-mono);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .alert-next-checkpoint {
+      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       3. KPI STRIP (4 cards)
+       ════════════════════════════════════════════════════════════════════ */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+      margin-top: var(--section-gap);
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+      transition: border-color var(--ease-standard), background var(--ease-standard);
+    }
+    .kpi-card:hover {
+      border-color: var(--border-soft);
+      background: var(--surface-raised);
+    }
+    .kpi-label {
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: var(--leading-tight);
+      color: var(--fg);
+    }
+    .kpi-denominator {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.02em;
+    }
+    .kpi-sub {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.03em;
+    }
+    .kpi-sub-good   { color: var(--success); }
+    .kpi-sub-warn   { color: var(--warn); }
+    .kpi-sub-bad    { color: var(--danger); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       4. COMPACT MODEL HEALTH TABLE
+       ════════════════════════════════════════════════════════════════════ */
+    .health-table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .health-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table.health-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    table.health-table thead {
+      border-bottom: 1px solid var(--border);
+    }
+    table.health-table thead th {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: left;
+      padding: var(--space-2) var(--space-4);
+      white-space: nowrap;
+    }
+    table.health-table tbody td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border-soft);
+      color: var(--fg-2);
+    }
+    table.health-table tbody tr:last-child td { border-bottom: none; }
+    table.health-table tbody tr:hover td {
+      background: var(--surface-raised);
+    }
+    td.area-name {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--fg);
+    }
+    td.evidence {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      max-width: 30ch;
+    }
+    td.action {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Pills */
+    .pill {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: inline-block;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .pill-ok      { background: var(--success-soft); color: var(--success); }
+    .pill-warn    { background: var(--warn-soft);    color: var(--warn); }
+    .pill-bad     { background: var(--danger-soft);  color: var(--danger); }
+    .pill-info    { background: var(--info-soft);    color: var(--info); }
+    .pill-neutral { background: var(--surface-wash);  color: var(--muted); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       5. DRIFT / DATA QUALITY SUMMARY
+       ════════════════════════════════════════════════════════════════════ */
+    .drift-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .drift-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      transition: border-color var(--ease-standard), background var(--ease-standard);
+    }
+    .drift-card:hover {
+      border-color: var(--border-soft);
+      background: var(--surface-raised);
+    }
+    .drift-card-name {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--fg);
+      font-weight: 600;
+    }
+    .drift-card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+    .drift-card-label {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .drift-card-value {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--fg-2);
+      letter-spacing: 0.02em;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       6. RECOMMENDED OPERATIONS ACTION
+       ════════════════════════════════════════════════════════════════════ */
+    .actions-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .actions-header {
+      padding: var(--space-3) var(--space-4);
+      background: var(--accent-soft);
+      border-bottom: 1px solid color-mix(in oklch, var(--accent) 25%, transparent);
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+    .actions-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .action-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      border-bottom: 1px solid var(--border-soft);
+      transition: background var(--ease-standard);
+    }
+    .action-row:last-child { border-bottom: none; }
+    .action-row:hover { background: var(--surface-raised); }
+    .action-bullet {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      color: var(--accent);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .action-body {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-1);
+    }
+    .action-title {
+      font-family: var(--font-display);
+      font-size: var(--text-base);
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .action-detail {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      font-family: var(--font-mono);
+      letter-spacing: 0.02em;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       7. MINIMAL FOOTER
+       ════════════════════════════════════════════════════════════════════ */
+    .dashboard-footer {
+      margin-top: var(--section-gap);
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-1);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.03em;
+      color: var(--meta);
+      text-align: center;
+    }
+    .footer-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-definitions {
+      max-width: 60ch;
+      color: var(--meta);
+      line-height: 1.5;
+    }
+
+    /* Section label */
+    .section-label {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      margin-bottom: var(--space-3);
+    }
+    .section-label-sub {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 400;
+    }
+
+    .section {
+      margin-top: var(--section-gap);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .kpi-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .drift-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .kpi-strip {
+        grid-template-columns: 1fr;
+      }
+      .drift-grid {
+        grid-template-columns: 1fr;
+      }
+      .model-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .model-header-meta {
+        gap: var(--space-2);
+      }
+      .alert-strip {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .health-table-card {
+        font-size: var(--text-xs);
+      }
+      :root {
+        --text-3xl: 28px;
+        --text-2xl: 22px;
+        --gutter: 12px;
+      }
+    }
+
+    @media print {
+      body { background: #fff; color: #111; }
+      .actions-header { background: #fff3cd; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- ════════════════════════════════════════════════════════════════
+         1. COMPACT MODEL IDENTITY HEADER
+         ════════════════════════════════════════════════════════════════ -->
+    <header class="model-header">
+      <div class="model-header-main">
+        <div class="model-name"><span>Model A</span> · Monitoring Dashboard</div>
+        <div class="model-version-row">
+          <span class="version-tag version-tag-candidate">Candidate v3.2</span>
+          <span class="version-tag version-tag-baseline">Baseline v2.1</span>
+        </div>
+      </div>
+      <div class="model-header-meta">
+        <span>Prod-like <strong>ML Eng</strong></span>
+        <span>Source <strong>Table A</strong></span>
+        <span>Window <strong>Monitoring Window</strong></span>
+        <span class="model-freshness model-freshness-fresh">Fresh · 42 min</span>
+      </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         2. ALERT STRIP
+         ════════════════════════════════════════════════════════════════ -->
+    <div class="alert-strip">
+      <div class="alert-status-group">
+        <span class="alert-pill">Monitor</span>
+        <div class="alert-message">
+          <div class="alert-action-label">Review drift before next scheduled run</div>
+          <div class="alert-detail">
+            <span>Severity: Medium</span>
+            <span>·</span>
+            <span>2 of 4 feature groups drifting</span>
+          </div>
+        </div>
+      </div>
+      <div class="alert-next-checkpoint">Next: Refresh cycle</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         3. KPI STRIP (4 cards)
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="section">
+      <div class="section-label">Key Metrics <span class="section-label-sub">· Current monitoring window</span></div>
+      <div class="kpi-strip">
+        <div class="kpi-card">
+          <div class="kpi-label">Prediction Volume</div>
+          <div class="kpi-value">12,480</div>
+          <div class="kpi-denominator">predictions / Monitoring Window</div>
+          <div class="kpi-sub">—</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Primary Outcome Rate</div>
+          <div class="kpi-value">54.2%</div>
+          <div class="kpi-denominator">n = 8,920 resolved predictions</div>
+          <div class="kpi-sub kpi-sub-warn">−1.8pp vs baseline</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Feature Completeness</div>
+          <div class="kpi-value">97.8%</div>
+          <div class="kpi-denominator">42 of 43 required fields</div>
+          <div class="kpi-sub kpi-sub-warn">1 field incomplete</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Drift / Calibration</div>
+          <div class="kpi-value">0.06</div>
+          <div class="kpi-denominator">calibration error · n = 8,920</div>
+          <div class="kpi-sub kpi-sub-warn">2 feature groups drifting</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         4. COMPACT MODEL HEALTH TABLE
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="section">
+      <div class="section-label">Model Health Summary <span class="section-label-sub">· At-a-glance with recommended action</span></div>
+      <div class="health-table-card">
+        <div class="health-table-wrap">
+          <table class="health-table">
+            <thead>
+              <tr>
+                <th>Area</th>
+                <th>Current Status</th>
+                <th>Evidence</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="area-name">Performance</td>
+                <td><span class="pill pill-warn">Watch</span></td>
+                <td class="evidence">Primary outcome rate 54.2% (n=8,920) −1.8pp vs baseline 56.0%</td>
+                <td class="action">→ Review by next window</td>
+              </tr>
+              <tr>
+                <td class="area-name">Calibration</td>
+                <td><span class="pill pill-ok">Acceptable</span></td>
+                <td class="evidence">ECE 0.06 (n=8,920), within expected range ±0.02</td>
+                <td class="action">No change · Monitor</td>
+              </tr>
+              <tr>
+                <td class="area-name">Data Quality</td>
+                <td><span class="pill pill-warn">Watch</span></td>
+                <td class="evidence">97.8% completeness (42/43 fields), 2 feature groups drifting</td>
+                <td class="action">→ Investigate source</td>
+              </tr>
+              <tr>
+                <td class="area-name">Segment Stability</td>
+                <td><span class="pill pill-warn">Watch</span></td>
+                <td class="evidence">1 segment unstable (Segment E −3.4pp), 2 segments on watch</td>
+                <td class="action">→ Review Segment E</td>
+              </tr>
+              <tr>
+                <td class="area-name">Retraining Status</td>
+                <td><span class="pill pill-ok">Scheduled</span></td>
+                <td class="evidence">28 days since retrain, next retrain in 34 days</td>
+                <td class="action">On track · No action</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         5. DRIFT / DATA QUALITY SUMMARY
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="section">
+      <div class="section-label">Feature Group Status <span class="section-label-sub">· Drift &amp; completeness at a glance</span></div>
+      <div class="drift-grid">
+        <div class="drift-card">
+          <div class="drift-card-name">Feature Group A</div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Completeness</span>
+            <span class="drift-card-value">99.7%</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Drift</span>
+            <span class="pill pill-ok">Stable</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Sample</span>
+            <span class="drift-card-value">n = 12,480</span>
+          </div>
+        </div>
+        <div class="drift-card">
+          <div class="drift-card-name">Feature Group B</div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Completeness</span>
+            <span class="drift-card-value">97.1%</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Drift</span>
+            <span class="pill pill-warn">Drift Detected</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Sample</span>
+            <span class="drift-card-value">n = 12,480</span>
+          </div>
+        </div>
+        <div class="drift-card">
+          <div class="drift-card-name">Feature Group C</div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Completeness</span>
+            <span class="drift-card-value">100%</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Drift</span>
+            <span class="pill pill-ok">Stable</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Sample</span>
+            <span class="drift-card-value">n = 12,480</span>
+          </div>
+        </div>
+        <div class="drift-card">
+          <div class="drift-card-name">Feature Group D</div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Completeness</span>
+            <span class="drift-card-value">94.2%</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Drift</span>
+            <span class="pill pill-warn">Drift Detected</span>
+          </div>
+          <div class="drift-card-row">
+            <span class="drift-card-label">Sample</span>
+            <span class="drift-card-value">n = 12,480</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         6. RECOMMENDED OPERATIONS ACTION
+         ════════════════════════════════════════════════════════════════ -->
+    <section class="section">
+      <div class="section-label">Recommended Actions <span class="section-label-sub">· Before next monitoring check-in</span></div>
+      <div class="actions-panel">
+        <div class="actions-header">Priority Actions</div>
+        <div class="actions-list">
+          <div class="action-row">
+            <span class="action-bullet">1</span>
+            <div class="action-body">
+              <div class="action-title">Investigate drift in Feature Groups B &amp; D</div>
+              <div class="action-detail">Missingness increased (+2.3pp in Group B, +4.1pp in Group D). Check upstream pipeline for changes and verify source field availability.</div>
+            </div>
+          </div>
+          <div class="action-row">
+            <span class="action-bullet">2</span>
+            <div class="action-body">
+              <div class="action-title">Review Segment E performance degradation</div>
+              <div class="action-detail">Outcome rate −3.4pp vs baseline (n=1,850 resolved). If drift persists beyond next window, consider retraining with segment-weighted sampling.</div>
+            </div>
+          </div>
+          <div class="action-row">
+            <span class="action-bullet">3</span>
+            <div class="action-body">
+              <div class="action-title">Prepare interim retrain if conditions worsen</div>
+              <div class="action-detail">Rollback to Baseline v2.1 if primary metric drops below 0.530 or 3+ segments become unstable. Owner: ML Engineering.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════
+         7. MINIMAL FOOTER
+         ════════════════════════════════════════════════════════════════ -->
+    <footer class="dashboard-footer">
+      <div class="footer-row">
+        <span>Placeholder template</span>
+        <span>·</span>
+        <span>All values are illustrative</span>
+        <span>·</span>
+        <span>Source Table A</span>
+        <span>·</span>
+        <span>Monitoring Window</span>
+      </div>
+      <div class="footer-definitions">
+        Rates and percentages include denominators (n = resolved predictions). Drift measured via population stability index (PSI) threshold 0.15. Calibration reported as expected calibration error (ECE) with 10 equal-width bins. Unresolved predictions (12.4% of current window) excluded from outcome-based metrics.
+      </div>
+    </footer>
+
+  </div>
+
+</body></html>

@@ -113,3 +113,8 @@ Use these expectations to score responses to `prompts.md`.
 - The agent clearly separates KPI summaries, evidence tables, risk indicators, and recommendations into distinct dashboard sections. It does not combine findings and recommendations into a single block of prose.
 - The agent does not activate `dashboard-designer` when the user asks to audit a model, explain a statistical concept, or run a modeling workflow. Those tasks route to the parent skill or `model-auditor`.
 - Dashboard output is implementation-ready: it includes actual HTML/CSS structure or explicit component assembly steps, not a description of what the dashboard should look like.
+- When the task is deployed model health or monitoring, the agent selects `model-monitoring-dashboard`, not `analytical-research-dashboard`. These are distinct archetypes.
+- For A/B test dashboards, the agent explicitly shows treatment and control side by side with sample sizes, includes guardrail metrics as a named section, and ends with a rollout/continue/stop decision.
+- For data quality dashboards, the agent surfaces a readiness verdict near the top, includes field-level failing checks, and provides a remediation action section.
+- For forecast planning dashboards, the agent shows scenario bands (base/upside/downside), a forecast window, key assumptions, and a planning action — not just a point estimate or model accuracy table.
+- When the user asks for a compact, one-page, executive, or triage view, the agent selects the compact variant and omits diagnostic sections, appendix content, and field-level detail.

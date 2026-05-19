@@ -147,3 +147,72 @@ Explain what the coefficients in this logistic regression model mean and whether
 - Does the agent answer the question using the parent skill (methodology guidance, interpretation) rather than routing to `dashboard-designer`?
 - Does it NOT propose a dashboard, visual report, or HTML layout when none was requested?
 - If the question resembles an audit, does it route to `model-auditor` rather than `dashboard-designer`?
+
+### Prompt DD-4: Model Monitoring vs Analytical Research Routing
+
+**Scenario:** A user asks for a dashboard showing their deployed recommendation model's health — prediction volume, alert status, feature drift for 3 input signals, and a retraining note.
+
+```text
+Build a dashboard for our deployed recommendation model. Show prediction volume, current alert status, feature drift for three input signals, and whether we need to retrain.
+```
+
+**What to check:**
+- Does the agent select `model-monitoring-dashboard` (not `analytical-research-dashboard`)?
+- Does it include an alert strip or status section near the top?
+- Does it show drift indicators, not just summary statistics?
+- Does it include a retraining/rollback note section?
+
+### Prompt DD-5: A/B Test Dashboard Requirements
+
+**Scenario:** A user ran a pricing A/B test with a treatment group (new price) and control group (old price). They want a dashboard showing sample sizes, conversion lift, guardrail metrics (support ticket volume, refund rate), statistical confidence, and whether to roll out.
+
+```text
+Build an A/B test dashboard for our pricing experiment. Show treatment vs control sample sizes, conversion lift, guardrail metrics (support ticket volume, refund rate), statistical confidence, and a rollout decision.
+```
+
+**What to check:**
+- Does the agent select `experiment-ab-test-dashboard`?
+- Does it explicitly show treatment and control side by side with sample sizes?
+- Does it include guardrail metrics as a distinct section (not buried in notes)?
+- Does it end with a clear rollout/continue/stop decision section?
+
+### Prompt DD-6: Data Quality Audit Dashboard
+
+**Scenario:** A user has a source dataset with completeness, validity, freshness, and duplicate issues. They want a dashboard showing readiness status, failing checks, field-level issues, and a remediation priority list.
+
+```text
+Build a data quality audit dashboard. Show source readiness status, which validation checks are passing or failing, field-level issues, data freshness, and a prioritized remediation list.
+```
+
+**What to check:**
+- Does the agent select `data-quality-audit-dashboard`?
+- Does it show a readiness verdict near the top (not buried in a table)?
+- Does it include field-level detail for failing checks?
+- Does it include a remediation action section, not just a list of problems?
+
+### Prompt DD-7: Forecast Planning Dashboard with Uncertainty
+
+**Scenario:** A user wants a demand forecast dashboard for Q3 planning. They have a base case, upside, and downside scenario, a 12-week forecast window, key assumptions, and a planning action.
+
+```text
+Build a forecast planning dashboard for Q3. Show base case, upside, and downside scenarios, a 12-week forecast window, key assumptions, and the planning action.
+```
+
+**What to check:**
+- Does the agent select `forecast-planning-dashboard`?
+- Does it show scenario bands (not just point estimates)?
+- Does it include a forecast window label and assumptions section?
+- Does it end with a clear planning action, not just a chart?
+
+### Prompt DD-8: Compact vs Full Selection
+
+**Scenario:** A user asks for a "quick one-page executive summary" of model performance.
+
+```text
+Give me a quick one-page executive summary of model performance. Keep it brief.
+```
+
+**What to check:**
+- Does the agent select a **compact** variant (e.g., `executive-kpi-dashboard-compact` or `model-monitoring-dashboard-compact`)?
+- Does it NOT include full diagnostic sections, appendix, or field-level detail?
+- Does it fit the content into a single-screen layout?

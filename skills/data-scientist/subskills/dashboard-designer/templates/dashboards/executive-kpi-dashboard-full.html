@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Executive KPI Dashboard · Reference Template</title>
+  <style>
+    /* ════════════════════════════════════════════════════════════════════
+       TOKENS — Bind to your brand here. All colors surface through var().
+       ════════════════════════════════════════════════════════════════════ */
+    :root {
+      /* Surface */
+      --bg:            #0a0a10;
+      --surface:       #14141e;
+      --surface-raised:#1b1b28;
+      --surface-wash:  #101018;
+
+      /* Foreground ramp */
+      --fg:            #eaeaef;
+      --fg-2:          #b8b8c4;
+      --muted:         #7e7e8e;
+      --meta:          #555562;
+
+      /* Border */
+      --border:        #1e1e2c;
+      --border-soft:   #171723;
+
+      /* Accent — warm amber/gold */
+      --accent:        #c8960c;
+      --accent-soft:   color-mix(in oklch, var(--accent) 18%, transparent);
+      --accent-hover:  #d9a61a;
+
+      /* Semantic */
+      --success:       #2ea85a;
+      --warn:          #c8960c;
+      --danger:        #d44a3a;
+      --info:          #4a8fd4;
+
+      --success-soft:  color-mix(in oklch, var(--success) 14%, transparent);
+      --warn-soft:     color-mix(in oklch, var(--warn) 14%, transparent);
+      --danger-soft:   color-mix(in oklch, var(--danger) 14%, transparent);
+
+      /* Typography */
+      --font-display:  'Iowan Old Style', Charter, Georgia, 'Times New Roman', serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono:     ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      --text-xs:       11px;
+      --text-sm:       13px;
+      --text-base:     15px;
+      --text-lg:       18px;
+      --text-xl:       22px;
+      --text-2xl:      28px;
+      --text-3xl:      40px;
+      --text-4xl:      56px;
+
+      --leading-body:  1.55;
+      --leading-tight: 1.15;
+
+      /* Spacing */
+      --space-1:       4px;
+      --space-2:       8px;
+      --space-3:       12px;
+      --space-4:       16px;
+      --space-5:       20px;
+      --space-6:       24px;
+      --space-8:       32px;
+      --space-10:      40px;
+      --space-12:      48px;
+
+      /* Radius */
+      --radius-sm:     6px;
+      --radius-md:     10px;
+      --radius-lg:     14px;
+
+      /* Layout */
+      --container-max: 1280px;
+      --gutter:        28px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESET & BASE
+       ════════════════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: var(--space-12);
+    }
+    p { text-wrap: pretty; }
+    h1, h2, h3 { text-wrap: balance; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       CONTAINER
+       ════════════════════════════════════════════════════════════════════ */
+    .container {
+      max-width: var(--container-max);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       1. HEADER BAR
+       ════════════════════════════════════════════════════════════════════ */
+    .dash-header {
+      border-bottom: 1px solid var(--border);
+      padding-block: var(--space-4);
+    }
+    .dash-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .dash-header-question {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      min-width: 0;
+    }
+    .dash-header-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-shrink: 0;
+    }
+    .dash-header-meta-item {
+      font-size: var(--text-sm);
+      color: var(--muted);
+    }
+    .dash-header-meta-item strong {
+      color: var(--fg-2);
+      font-weight: 500;
+    }
+    .freshness {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .freshness-live {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+    .freshness-stale {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       2. VERDICT BAND
+       ════════════════════════════════════════════════════════════════════ */
+    .verdict-band {
+      margin-top: var(--space-4);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .verdict-band-atrisk {
+      background: var(--warn-soft);
+      border-left: 4px solid var(--warn);
+    }
+    .verdict-band-ontrack {
+      background: var(--success-soft);
+      border-left: 4px solid var(--success);
+    }
+    .verdict-band-offtrack {
+      background: var(--danger-soft);
+      border-left: 4px solid var(--danger);
+    }
+    .verdict-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .verdict-pill {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+    }
+    .verdict-pill-atrisk  { background: var(--warn);  color: var(--bg); }
+    .verdict-pill-ontrack { background: var(--success); color: var(--bg); }
+    .verdict-pill-offtrack{ background: var(--danger); color: var(--bg); }
+    .verdict-gap {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+    .verdict-gap-atrisk  { color: var(--warn); }
+    .verdict-gap-ontrack { color: var(--success); }
+    .verdict-gap-offtrack{ color: var(--danger); }
+    .verdict-decision {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--fg);
+      max-width: 42ch;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       3. KPI STRIP
+       ════════════════════════════════════════════════════════════════════ */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .kpi-card-primary {
+      border-color: var(--accent);
+      background: color-mix(in oklch, var(--surface) 92%, var(--accent));
+    }
+    .kpi-label {
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .kpi-primary .kpi-label { color: var(--accent); }
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: var(--leading-tight);
+      color: var(--fg);
+    }
+    .kpi-primary .kpi-value { color: var(--accent); }
+    .kpi-context {
+      font-size: var(--text-sm);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .kpi-delta {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .kpi-delta-up   { color: var(--success); }
+    .kpi-delta-down { color: var(--danger); }
+    .kpi-delta-flat { color: var(--muted); }
+    .kpi-denominator {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: auto;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       4. STATUS vs TARGET
+       ════════════════════════════════════════════════════════════════════ */
+    .dash-section {
+      margin-top: var(--space-10);
+    }
+    .dash-section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      margin-bottom: var(--space-4);
+    }
+    .dash-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .panel-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-3);
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: var(--space-3) 0;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--warn);
+    }
+    .progress-fill-ontrack  { background: var(--success); }
+    .progress-fill-atrisk   { background: var(--warn); }
+    .progress-fill-offtrack { background: var(--danger); }
+
+    .status-metric {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-block: var(--space-2);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .status-metric:last-child { border-bottom: 0; }
+    .status-metric-label {
+      font-size: var(--text-sm);
+      color: var(--muted);
+    }
+    .status-metric-value {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       5. TREND PANEL (placeholder)
+       ════════════════════════════════════════════════════════════════════ */
+    .trend-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+      gap: var(--space-3);
+      color: var(--meta);
+    }
+    .trend-placeholder-box {
+      width: 100%;
+      height: 160px;
+      background: var(--surface-wash);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       6. DRIVERS TABLE
+       ════════════════════════════════════════════════════════════════════ */
+    .drivers-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .drivers-table th {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: left;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border);
+    }
+    .drivers-table th.num-col {
+      text-align: right;
+    }
+    .drivers-table td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: top;
+    }
+    .drivers-table .num-col {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .drivers-table tbody tr:hover td {
+      background: var(--surface-wash);
+    }
+    .driver-impact-bar {
+      display: inline-block;
+      height: 4px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-right: var(--space-2);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       7. RISK & OPPORTUNITY CALLOUTS
+       ════════════════════════════════════════════════════════════════════ */
+    .callout-list {
+      list-style: none;
+      padding: 0;
+    }
+    .callout-item {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .callout-item:last-child { border-bottom: 0; }
+    .callout-marker {
+      flex-shrink: 0;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      margin-top: 6px;
+    }
+    .callout-marker-risk   { background: var(--danger); }
+    .callout-marker-opp    { background: var(--success); }
+    .callout-item-title {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--fg);
+    }
+    .callout-item-desc {
+      font-size: var(--text-sm);
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .callout-item-impact {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: 2px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       8. ACTION PANEL
+       ════════════════════════════════════════════════════════════════════ */
+    .action-panel {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6);
+    }
+    .action-panel-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: var(--space-3);
+    }
+    .action-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--fg-2);
+    }
+    .action-item-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--accent);
+      flex-shrink: 0;
+      width: 20px;
+      text-align: right;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       9. FOOTER
+       ════════════════════════════════════════════════════════════════════ */
+    .dash-footer {
+      margin-top: var(--space-10);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--border);
+      color: var(--meta);
+      font-size: var(--text-xs);
+      line-height: 1.6;
+    }
+    .dash-footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-5);
+    }
+    .dash-footer-col-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-2);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 1100px) {
+      .kpi-strip { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 820px) {
+      .dash-grid-2 { grid-template-columns: 1fr; }
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+      .verdict-band { flex-direction: column; align-items: flex-start; }
+      .dash-header-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 520px) {
+      .kpi-strip { grid-template-columns: 1fr; }
+      .container { padding-inline: var(--space-4); }
+      .verdict-decision { font-size: var(--text-base); }
+    }
+    @media print {
+      body { background: #fff; color: #000; }
+      .dash-header { border-color: #ccc; }
+      .kpi-card, .panel, .action-panel { background: #fff; border: 1px solid #ccc; }
+      .verdict-band { background: #f5f5f5; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+   1. HEADER — Business question, scope, date range, source, freshness
+   ════════════════════════════════════════════════════════════════════════ -->
+<header class="dash-header">
+  <div class="container dash-header-inner">
+    <h1 class="dash-header-question">Are we on track against the primary business target?</h1>
+    <div class="dash-header-meta">
+      <span class="dash-header-meta-item">Scope: <strong>All Regions · Product Line A</strong></span>
+      <span class="dash-header-meta-item">Period: <strong>Jan 1 – May 17, 2026</strong></span>
+      <span class="dash-header-meta-item">Source: <strong>Internal Reporting</strong></span>
+      <span class="freshness freshness-live">Updated May 18 09:42 UTC</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     2. EXECUTIVE VERDICT BAND
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="verdict-band verdict-band-atrisk">
+    <div class="verdict-status">
+      <span class="verdict-pill verdict-pill-atrisk">At Risk</span>
+      <span>Primary metric at <strong class="verdict-gap verdict-gap-atrisk">70.6%</strong> of year-to-date target</span>
+    </div>
+    <p class="verdict-decision">Recommended: accelerate Q2 growth initiatives and re-forecast annual target by June 15.</p>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     3. KPI STRIP — 5 cards
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="kpi-strip" aria-label="Key performance indicators">
+
+    <!-- Card 1: Primary KPI -->
+    <div class="kpi-card kpi-card-primary kpi-primary">
+      <span class="kpi-label">Primary Metric</span>
+      <span class="kpi-value">847.2K</span>
+      <span class="kpi-context">
+        of 1.2M target
+        <span class="kpi-delta kpi-delta-up">▲ 4.8%</span>
+      </span>
+      <span class="kpi-denominator">n = 12,450 · 5 segments</span>
+    </div>
+
+    <!-- Card 2: Target / Benchmark -->
+    <div class="kpi-card">
+      <span class="kpi-label">Target / Benchmark</span>
+      <span class="kpi-value" style="font-size: var(--text-2xl);">1.2M</span>
+      <span class="kpi-context">Annual target</span>
+      <span class="kpi-denominator">YTD expected: 940K</span>
+    </div>
+
+    <!-- Card 3: Change vs Prior Period -->
+    <div class="kpi-card">
+      <span class="kpi-label">Change vs Prior Period</span>
+      <span class="kpi-value" style="font-size: var(--text-2xl);">
+        <span class="kpi-delta kpi-delta-up">+12.4%</span>
+      </span>
+      <span class="kpi-context">vs Jan–May 2025</span>
+      <span class="kpi-denominator">n = 11,820 prior period</span>
+    </div>
+
+    <!-- Card 4: Risk / Exception Count -->
+    <div class="kpi-card">
+      <span class="kpi-label">Risk / Exceptions</span>
+      <span class="kpi-value" style="font-size: var(--text-2xl); color: var(--warn);">3</span>
+      <span class="kpi-context">
+        flagged items
+        <span style="color: var(--danger); margin-left: 6px;">1 high</span>
+        <span style="color: var(--muted); margin-left: 6px;">2 medium</span>
+      </span>
+      <span class="kpi-denominator">across 18 monitored indicators</span>
+    </div>
+
+    <!-- Card 5: Confidence / Data Quality -->
+    <div class="kpi-card">
+      <span class="kpi-label">Confidence / Data Quality</span>
+      <span class="kpi-value" style="font-size: var(--text-2xl); color: var(--success);">High</span>
+      <span class="kpi-context">98.2% completeness</span>
+      <span class="kpi-denominator">n = 12,450 · last audit May 15</span>
+    </div>
+
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     4. STATUS vs TARGET + 5. TREND
+     ════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-grid-2" style="margin-top: var(--space-8);">
+
+    <!-- 4. Status vs Target -->
+    <section class="panel">
+      <span class="panel-label">Status vs Target</span>
+
+      <div style="display: flex; justify-content: space-between; align-items: baseline;">
+        <span style="font-size: var(--text-sm); color: var(--muted);">Year-to-date progress</span>
+        <span class="num" style="font-size: var(--text-lg); font-weight: 600; color: var(--warn);">70.6%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill progress-fill-atrisk" style="width: 70.6%;"></div>
+      </div>
+      <div style="display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta);">
+        <span>847.2K achieved</span>
+        <span>1.2M target</span>
+      </div>
+
+      <div style="margin-top: var(--space-4);">
+        <div class="status-metric">
+          <span class="status-metric-label">Gap to target</span>
+          <span class="status-metric-value" style="color: var(--warn);">−352.8K</span>
+        </div>
+        <div class="status-metric">
+          <span class="status-metric-label">Days remaining</span>
+          <span class="status-metric-value">228 of 365</span>
+        </div>
+        <div class="status-metric">
+          <span class="status-metric-label">Required daily rate</span>
+          <span class="status-metric-value">1,548 vs 2,860 plan</span>
+        </div>
+        <div class="status-metric">
+          <span class="status-metric-label">Forecast (current pace)</span>
+          <span class="status-metric-value" style="color: var(--warn);">1.02M</span>
+        </div>
+        <div class="status-metric">
+          <span class="status-metric-label">Forecast vs target</span>
+          <span class="status-metric-value" style="color: var(--danger);">−15.0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Trend Panel -->
+    <section class="panel">
+      <span class="panel-label">Trend · Primary Metric (Daily)</span>
+      <div class="trend-placeholder-box">
+        [ Trend visualization placeholder · 160px ]
+      </div>
+      <div style="display: flex; justify-content: space-between; margin-top: var(--space-2); font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta);">
+        <span>Jan 1</span>
+        <span>Mar 1</span>
+        <span>May 17</span>
+      </div>
+      <p style="font-size: var(--text-xs); color: var(--muted); margin-top: var(--space-2);">
+        Upward trajectory since March; current pace needs acceleration to close year-end gap.
+      </p>
+    </section>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     6. TOP DRIVERS / SEGMENT DECOMPOSITION
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="dash-section">
+    <h2 class="dash-section-title">Top Drivers · Segment Contribution</h2>
+    <div class="panel" style="padding: 0; overflow-x: auto;">
+      <table class="drivers-table">
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th>Contribution</th>
+            <th class="num-col">Current</th>
+            <th class="num-col">Target</th>
+            <th class="num-col">% Achieved</th>
+            <th class="num-col">YOY Change</th>
+            <th class="num-col">Sample (n)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Segment A</strong></td>
+            <td><span class="driver-impact-bar" style="width: 54px; background: var(--accent);"></span> 36%</td>
+            <td class="num-col">305.0K</td>
+            <td class="num-col">420K</td>
+            <td class="num-col" style="color: var(--warn);">72.6%</td>
+            <td class="num-col" style="color: var(--success);">+18.2%</td>
+            <td class="num-col">4,520</td>
+          </tr>
+          <tr>
+            <td><strong>Segment B</strong></td>
+            <td><span class="driver-impact-bar" style="width: 42px; background: var(--accent);"></span> 28%</td>
+            <td class="num-col">237.2K</td>
+            <td class="num-col">340K</td>
+            <td class="num-col" style="color: var(--warn);">69.8%</td>
+            <td class="num-col" style="color: var(--success);">+9.4%</td>
+            <td class="num-col">5,180</td>
+          </tr>
+          <tr>
+            <td><strong>Segment C</strong></td>
+            <td><span class="driver-impact-bar" style="width: 28px; background: var(--accent);"></span> 19%</td>
+            <td class="num-col">161.0K</td>
+            <td class="num-col">250K</td>
+            <td class="num-col" style="color: var(--warn);">64.4%</td>
+            <td class="num-col" style="color: var(--success);">+10.1%</td>
+            <td class="num-col">2,140</td>
+          </tr>
+          <tr>
+            <td><strong>Segment D</strong></td>
+            <td><span class="driver-impact-bar" style="width: 16px; background: var(--accent);"></span> 11%</td>
+            <td class="num-col">93.2K</td>
+            <td class="num-col">130K</td>
+            <td class="num-col" style="color: var(--warn);">71.7%</td>
+            <td class="num-col" style="color: var(--success);">+15.6%</td>
+            <td class="num-col">380</td>
+          </tr>
+          <tr>
+            <td><strong>Segment E</strong></td>
+            <td><span class="driver-impact-bar" style="width: 9px; background: var(--accent);"></span> 6%</td>
+            <td class="num-col">50.8K</td>
+            <td class="num-col">60K</td>
+            <td class="num-col" style="color: var(--success);">84.7%</td>
+            <td class="num-col" style="color: var(--success);">+22.1%</td>
+            <td class="num-col">230</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     7. RISK & OPPORTUNITY CALLOUTS
+     ════════════════════════════════════════════════════════════════════ -->
+  <div class="dash-grid-2" style="margin-top: var(--space-8);">
+
+    <!-- Risk callouts -->
+    <section class="panel">
+      <span class="panel-label">Risks to Monitor</span>
+      <ul class="callout-list">
+        <li class="callout-item">
+          <span class="callout-marker callout-marker-risk"></span>
+          <div>
+            <p class="callout-item-title">Segment C pacing at 64.4% of target</p>
+            <p class="callout-item-desc">Conversion rates in Segment C have declined 3.2pp vs prior year. If this trend continues, segment will miss by ~89K.</p>
+            <p class="callout-item-impact">Impact: −89K · n = 2,140 · Confidence: Medium</p>
+          </div>
+        </li>
+        <li class="callout-item">
+          <span class="callout-marker callout-marker-risk"></span>
+          <div>
+            <p class="callout-item-title">Seasonal slowdown expected in Q3</p>
+            <p class="callout-item-desc">Historical data shows a 8–12% seasonal dip in Q3 across all segments. Current forecasts do not yet account for this.</p>
+            <p class="callout-item-impact">Impact: −95K to −140K · n = 3 years historical · Confidence: High</p>
+          </div>
+        </li>
+        <li class="callout-item">
+          <span class="callout-marker callout-marker-risk"></span>
+          <div>
+            <p class="callout-item-title">Data coverage gap in Segment D</p>
+            <p class="callout-item-desc">380 data points in Segment D — estimates carry wider error margins. Interpret with caution.</p>
+            <p class="callout-item-impact">Impact: ±18K margin · n = 380 · Confidence: Low</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Opportunity callouts -->
+    <section class="panel">
+      <span class="panel-label">Opportunities</span>
+      <ul class="callout-list">
+        <li class="callout-item">
+          <span class="callout-marker callout-marker-opp"></span>
+          <div>
+            <p class="callout-item-title">Segment A opportunity queue growing at +18.2% YOY</p>
+            <p class="callout-item-desc">Three large items in late-stage negotiation could close by end of Q2, potentially adding 45–65K.</p>
+            <p class="callout-item-impact">Upside: +45K to +65K · n = 3 items · Confidence: Medium</p>
+          </div>
+        </li>
+        <li class="callout-item">
+          <span class="callout-marker callout-marker-opp"></span>
+          <div>
+            <p class="callout-item-title">Segment E outperforming at +22.1% YOY</p>
+            <p class="callout-item-desc">Segment E is the only segment exceeding target pace. Consider replicating Segment E model to adjacent categories.</p>
+            <p class="callout-item-impact">Upside: +8K to +15K if expanded · n = 230 · Confidence: Medium</p>
+          </div>
+        </li>
+        <li class="callout-item">
+          <span class="callout-marker callout-marker-opp"></span>
+          <div>
+            <p class="callout-item-title">Retention metric improved 2.1pp across all segments</p>
+            <p class="callout-item-desc">Retention metric this year is at 91.4% (n = 11,200) vs 89.3% prior year. Improving retention compounds into H2.</p>
+            <p class="callout-item-impact">Upside: +22K compounding · n = 11,200 · Confidence: High</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     8. RECOMMENDED ACTION PANEL
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="dash-section">
+    <div class="action-panel">
+      <p class="action-panel-title">Recommended Actions</p>
+      <ol class="action-list">
+        <li class="action-item">
+          <span class="action-item-num">1</span>
+          <span>Accelerate Segment A opportunity queue: prioritize closing the 3 late-stage items in Segment A before end of Q2. Estimated impact: +45–65K.</span>
+        </li>
+        <li class="action-item">
+          <span class="action-item-num">2</span>
+          <span>Re-forecast annual target: current pace projects 1.02M vs 1.2M target. Prepare a revised forecast for board review by June 15.</span>
+        </li>
+        <li class="action-item">
+          <span class="action-item-num">3</span>
+          <span>Address Segment C conversion decline: conversion dropped 3.2pp in Segment C. Assign dedicated review with segment owners by May 25.</span>
+        </li>
+        <li class="action-item">
+          <span class="action-item-num">4</span>
+          <span>Scale Segment E model: Segment E's +22.1% YOY performance suggests the approach is replicable. Scope expansion by June 1.</span>
+        </li>
+        <li class="action-item">
+          <span class="action-item-num">5</span>
+          <span>Improve Segment D data coverage: 380 data points limit confidence. Increase instrumentation in Segment D before next review cycle.</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+   9. FOOTER — Definitions, source, caveats, refresh cadence
+   ════════════════════════════════════════════════════════════════════════ -->
+<footer class="container dash-footer">
+  <div class="dash-footer-grid">
+    <div>
+      <p class="dash-footer-col-title">Metric Definitions</p>
+      <p>Primary Metric: placeholder aggregate across all segments and regions. Target set annually, allocated monthly. n values reflect distinct units in the reporting period. All figures rounded to nearest hundred or tenth of a percent unless otherwise noted.</p>
+    </div>
+    <div>
+      <p class="dash-footer-col-title">Data Sources</p>
+      <p>Internal reporting system. Data extracted May 18, 2026 09:42 UTC. Primary metric derived from transactional records with 98.2% completeness. Segment assignments based on unit classification as of Jan 1, 2026.</p>
+    </div>
+    <div>
+      <p class="dash-footer-col-title">Caveats &amp; Limitations</p>
+      <p>Segment D sample size (n = 380) limits confidence. Seasonal adjustments not yet applied to forecast. Segment E attribution model under review — figures may shift ±5% after Q2 recalibration.</p>
+    </div>
+    <div>
+      <p class="dash-footer-col-title">Refresh Cadence</p>
+      <p>Data refreshes daily at 08:00 UTC. Full audit and reconciliation runs weekly (Sunday). Forecast models are updated on the 1st and 15th of each month. Next scheduled review: May 25, 2026.</p>
+    </div>
+  </div>
+</footer>
+
+</body></html>

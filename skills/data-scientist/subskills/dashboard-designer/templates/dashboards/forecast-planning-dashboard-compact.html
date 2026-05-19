@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forecast Object A — Forecast / Planning Dashboard · Compact</title>
+  <style>
+    /* ════════════════════════════════════════════════════════════════════
+       TOKENS — Bind to your brand here.
+       ════════════════════════════════════════════════════════════════════ */
+    :root {
+      /* Surface — true near-black */
+      --bg:            #0d0d0d;
+      --surface:       #151515;
+      --surface-alt:   #1c1c1c;
+      --surface-raised:#202020;
+
+      /* Foreground ramp */
+      --fg:            #e8e8e8;
+      --fg-2:          #c4c4c4;
+      --muted:         #8a8a8a;
+      --meta:          #6a6a6a;
+
+      /* Border */
+      --border:        #292929;
+      --border-strong: #3d3d3d;
+
+      /* Accent — amber/gold for forecast uncertainty, planning risk, decision emphasis */
+      --accent:        oklch(72% 0.14 80);
+      --accent-soft:   color-mix(in oklch, var(--accent) 12%, transparent);
+      --accent-hover:  oklch(77% 0.14 80);
+
+      /* Semantic — green favorable, red unfavorable */
+      --positive:        oklch(58% 0.13 160);
+      --positive-bg:     color-mix(in oklch, var(--positive) 14%, transparent);
+      --positive-border: color-mix(in oklch, var(--positive) 25%, transparent);
+
+      --negative:        oklch(56% 0.17 22);
+      --negative-bg:     color-mix(in oklch, var(--negative) 14%, transparent);
+      --negative-border: color-mix(in oklch, var(--negative) 25%, transparent);
+
+      --uncertainty:        var(--accent);
+      --uncertainty-bg:     var(--accent-soft);
+      --uncertainty-border: color-mix(in oklch, var(--accent) 25%, transparent);
+
+      --neutral-bg:     color-mix(in oklch, var(--fg) 5%, transparent);
+      --neutral-border: var(--border);
+
+      /* Typography */
+      --font-display: 'Iowan Old Style', Charter, Georgia, 'Times New Roman', serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono:    ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      /* Scale */
+      --text-xs:    11px;
+      --text-sm:    12px;
+      --text-base:  13.5px;
+      --text-md:    15px;
+      --text-lg:    18px;
+      --text-xl:    22px;
+      --text-2xl:   28px;
+      --text-3xl:   36px;
+
+      /* Spacing */
+      --space-1:  4px;
+      --space-2:  8px;
+      --space-3:  12px;
+      --space-4:  16px;
+      --space-5:  20px;
+      --space-6:  24px;
+      --space-8:  32px;
+      --space-10: 40px;
+
+      /* Radii */
+      --radius-sm:   4px;
+      --radius:      8px;
+      --radius-lg:   12px;
+      --radius-pill: 9999px;
+
+      /* Layout */
+      --container: 1140px;
+      --gutter:    24px;
+
+      --leading:      1.5;
+      --leading-tight: 1.25;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESET & BASE
+       ════════════════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    p { text-wrap: pretty; }
+    h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       LAYOUT PRIMITIVES
+       ════════════════════════════════════════════════════════════════════ */
+    .container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+    .section { padding-block: var(--space-6); }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    .row       { display: flex; align-items: center; gap: var(--space-4); }
+    .row-wrap  { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .stack     { display: flex; flex-direction: column; }
+    .stack-2   { display: flex; flex-direction: column; gap: var(--space-2); }
+    .stack-3   { display: flex; flex-direction: column; gap: var(--space-3); }
+    .stack-4   { display: flex; flex-direction: column; gap: var(--space-4); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       TYPOGRAPHY
+       ════════════════════════════════════════════════════════════════════ */
+    h2 { font-size: var(--text-xl); font-weight: 600; letter-spacing: -0.015em; }
+    h3 { font-size: var(--text-md); font-weight: 600; letter-spacing: -0.01em; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--meta);
+    }
+    .meta      { font-size: var(--text-xs); color: var(--meta); }
+    .meta-mono { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta); }
+    .num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .muted { color: var(--muted); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       PILLS
+       ════════════════════════════════════════════════════════════════════ */
+    .pill {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+    .pill-positive     { background: var(--positive-bg);     color: var(--positive); }
+    .pill-negative     { background: var(--negative-bg);     color: var(--negative); }
+    .pill-uncertainty  { background: var(--uncertainty-bg);  color: var(--accent); }
+    .pill-neutral      { background: var(--neutral-bg);      color: var(--meta);  border: 1px solid var(--neutral-border); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 1 — COMPACT FORECAST IDENTITY HEADER
+       ════════════════════════════════════════════════════════════════════ */
+    .fc-header {
+      padding-block: var(--space-5);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .fc-header .fc-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-3);
+    }
+    .fc-header .fc-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-1) var(--space-5);
+    }
+    .fc-header .fc-meta-item {
+      font-size: var(--text-sm);
+      line-height: 1.7;
+    }
+    .fc-header .fc-meta-item .fml-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+    }
+    .fc-header .fc-meta-item .fml-value {
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+    }
+    .freshness {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta);
+      flex-shrink: 0;
+    }
+    .freshness-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--positive);
+      flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 2 — PLANNING VERDICT BAND (compact)
+       ════════════════════════════════════════════════════════════════════ */
+    .verdict-band {
+      padding-block: var(--space-5);
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+    .verdict-band .vdt-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-2);
+    }
+    .verdict-band .vdt-value {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+    }
+    .verdict-band .vdt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    .verdict-band .vdt-item .vdt-item-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: 4px;
+    }
+    .verdict-band .vdt-item .vdt-item-value {
+      font-size: var(--text-md);
+      font-weight: 500;
+    }
+    .verdict-band .vdt-item .vdt-item-sub {
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: 2px;
+    }
+    .vdt-uncertainty { color: var(--accent); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 3 — 4-CARD KPI STRIP
+       ════════════════════════════════════════════════════════════════════ */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+    }
+    .kpi-card .kpi-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: var(--space-2);
+    }
+    .kpi-card .kpi-value {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 36px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+    }
+    .kpi-card .kpi-value.accent      { color: var(--accent); }
+    .kpi-card .kpi-value.positive    { color: var(--positive); }
+    .kpi-card .kpi-value.uncertainty { color: var(--accent); }
+    .kpi-card .kpi-sub {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      margin-top: var(--space-1);
+    }
+    .kpi-card .kpi-denom {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: var(--space-1);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       DATA TABLE (shared)
+       ════════════════════════════════════════════════════════════════════ */
+    .dt-wrap { overflow-x: auto; }
+    .dt {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .dt thead th {
+      background: var(--surface-alt);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+      border-bottom: 1px solid var(--border-strong);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .dt thead th.num { text-align: right; }
+    .dt tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .dt tbody tr:hover { background: var(--surface-alt); }
+    .dt tbody tr:last-child td { border-bottom: none; }
+    .dt .row-label { font-weight: 600; font-size: var(--text-sm); }
+    .dt .cell-value { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+    .dt .cell-note { font-size: var(--text-xs); color: var(--muted); line-height: 1.5; }
+    .dt .cell-sample { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta); }
+    .dt td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 5 — DRIVER SIGNAL CARDS (compact grid)
+       ════════════════════════════════════════════════════════════════════ */
+    .signal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-3);
+    }
+    .signal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .signal-card .sig-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-3);
+    }
+    .signal-card .sig-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: var(--text-sm);
+      padding-block: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+    .signal-card .sig-row:last-child { border-bottom: none; }
+    .signal-card .sig-row .sig-k {
+      color: var(--meta);
+      font-size: var(--text-xs);
+    }
+    .signal-card .sig-row .sig-v {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--fg-2);
+    }
+    .signal-card .sig-row .sig-v.positive { color: var(--positive); }
+    .signal-card .sig-row .sig-v.negative { color: var(--negative); }
+    .signal-card .sig-row .sig-v.uncertainty { color: var(--accent); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 7 — ACCURACY / CAVEAT STRIP (compact cards)
+       ════════════════════════════════════════════════════════════════════ */
+    .accuracy-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    .accuracy-mini {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .accuracy-mini .acc-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: var(--space-2);
+    }
+    .accuracy-mini .acc-value {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      line-height: 1.15;
+    }
+    .accuracy-mini .acc-detail {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: var(--space-2);
+      line-height: 1.5;
+    }
+    .acc-pos { color: var(--positive); }
+    .acc-unc { color: var(--accent); }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 8 — RECOMMENDED PLANNING ACTION (highly visible)
+       ════════════════════════════════════════════════════════════════════ */
+    .action-section {
+      padding-block: var(--space-6);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border-strong);
+      border-bottom: 1px solid var(--border-strong);
+    }
+    .action-list { list-style: none; padding: 0; margin: 0; }
+    .action-item {
+      display: flex; gap: var(--space-4); align-items: flex-start;
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--border);
+    }
+    .action-item:first-child { border-top: none; }
+    .action-item .action-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .action-item .action-body .action-title {
+      font-weight: 600;
+      font-size: var(--text-md);
+      margin-bottom: 2px;
+    }
+    .action-item .action-body .action-detail {
+      font-size: var(--text-sm);
+      color: var(--muted);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       SECTION 9 — MINIMAL FOOTER
+       ════════════════════════════════════════════════════════════════════ */
+    .pagefoot {
+      padding-block: var(--space-6);
+      color: var(--meta);
+      font-size: var(--text-xs);
+      line-height: 1.7;
+    }
+    .pagefoot .foot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-5);
+    }
+    .pagefoot .foot-grid h4 {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-1);
+    }
+    .pagefoot .foot-grid p {
+      font-size: var(--text-xs);
+      line-height: 1.6;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+      .accuracy-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 920px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+      .accuracy-strip { grid-template-columns: repeat(2, 1fr); }
+      .verdict-band .vdt-grid { grid-template-columns: repeat(2, 1fr); }
+      .fc-header .fc-meta-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      :root { --gutter: 16px; }
+      .kpi-strip { grid-template-columns: 1fr; }
+      .accuracy-strip { grid-template-columns: 1fr; }
+      .verdict-band .vdt-grid { grid-template-columns: 1fr; }
+      .fc-header .fc-meta-grid { grid-template-columns: 1fr; }
+      .signal-grid { grid-template-columns: 1fr; }
+      .verdict-band .vdt-value { font-size: var(--text-lg); }
+      .pagefoot .foot-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       PRINT
+       ════════════════════════════════════════════════════════════════════ */
+    @media print {
+      :root {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --surface-alt: #f5f5f5;
+        --fg: #111111;
+        --fg-2: #333333;
+        --muted: #555555;
+        --meta: #777777;
+        --border: #cccccc;
+        --border-strong: #999999;
+        --accent: #b8860b;
+        --positive: #1d7d4c;
+        --negative: #b72b2b;
+      }
+      body { font-size: 11px; }
+      .section { padding-block: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 1 — Compact forecast identity header
+   ═════════════════════════════════════════════════════════════════════ -->
+<header class="fc-header">
+  <div class="container">
+    <div class="row-between">
+      <div>
+        <h1 class="fc-title">Forecast Object A — Forecast / Planning Dashboard</h1>
+        <div class="fc-meta-grid">
+          <div class="fc-meta-item">
+            <span class="fml-label">Forecast Object</span><br>
+            <span class="fml-value">Forecast Object A</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Forecast Version</span><br>
+            <span class="fml-value">Forecast Version A</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Forecast Method</span><br>
+            <span class="fml-value">Forecast Method A</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Owner Group</span><br>
+            <span class="fml-value">Owner Group A</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Source Table</span><br>
+            <span class="fml-value">Source Table A</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Forecast Window</span><br>
+            <span class="fml-value">Forecast Window</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Historical Window</span><br>
+            <span class="fml-value">Historical Window</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Baseline Window</span><br>
+            <span class="fml-value">Baseline Window</span>
+          </div>
+          <div class="fc-meta-item">
+            <span class="fml-label">Refresh Status</span><br>
+            <span class="fml-value">Refreshed</span>
+          </div>
+        </div>
+      </div>
+      <span class="freshness">
+        <span class="freshness-dot"></span>
+        Last refreshed 42 minutes ago
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 2 — Planning verdict band (before KPI cards)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="verdict-band">
+  <div class="container">
+    <p class="vdt-label">Planning Verdict</p>
+    <p class="vdt-value">
+      <span class="vdt-uncertainty">Base case stable</span> — plan to base case, reserve downside buffer
+    </p>
+    <div class="vdt-grid">
+      <div class="vdt-item">
+        <div class="vdt-item-label">Outlook</div>
+        <div class="vdt-item-value">Base case stable</div>
+        <div class="vdt-item-sub">Downside scenario requires planning buffer · Forecast Window</div>
+      </div>
+      <div class="vdt-item">
+        <div class="vdt-item-label">Required Action</div>
+        <div class="vdt-item-value vdt-uncertainty">Plan to base case, reserve downside buffer</div>
+        <div class="vdt-item-sub">Buffer: 6,200 units · Base Case</div>
+      </div>
+      <div class="vdt-item">
+        <div class="vdt-item-label">Risk Level</div>
+        <div class="vdt-item-value vdt-uncertainty">Medium</div>
+        <div class="vdt-item-sub">12-period forecast horizon · moderate uncertainty</div>
+      </div>
+      <div class="vdt-item">
+        <div class="vdt-item-label">Next Checkpoint</div>
+        <div class="vdt-item-value">Next Forecast Refresh</div>
+        <div class="vdt-item-sub">Re-evaluate after next source refresh</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 3 — 4-card KPI strip
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-label">Forecasted Total</div>
+        <div class="kpi-value">128,400</div>
+        <div class="kpi-sub">forecasted units</div>
+        <div class="kpi-denom">Forecast Window · 12-period horizon</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Change vs Baseline</div>
+        <div class="kpi-value positive">+4.2%</div>
+        <div class="kpi-sub">expected change</div>
+        <div class="kpi-denom">Baseline Window · Historical Window</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Forecast Range</div>
+        <div class="kpi-value uncertainty">118,900–137,600</div>
+        <div class="kpi-sub">expected range</div>
+        <div class="kpi-denom">80% prediction interval · 12-period horizon</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Planning Gap</div>
+        <div class="kpi-value accent">6,200</div>
+        <div class="kpi-sub">unit planning gap</div>
+        <div class="kpi-denom">Base Case · 12-period horizon · Medium uncertainty</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 4 — Compact scenario comparison table
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="row-between" style="margin-bottom: var(--space-4);">
+      <h2>Scenario Comparison</h2>
+      <span class="pill pill-uncertainty">4 scenarios · Forecast Window</span>
+    </div>
+    <div class="dt-wrap">
+      <table class="dt">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th class="num">Forecast Total</th>
+            <th>Range</th>
+            <th>Risk</th>
+            <th>Planning Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">
+              <span class="pill pill-negative" style="margin-right: 8px;">Downside</span>
+              Downside Scenario
+            </td>
+            <td class="num cell-value negative">118,900</td>
+            <td class="cell-value">118,900–122,400</td>
+            <td><span class="pill pill-negative">High</span></td>
+            <td class="cell-note">Reserve downside buffer · review Segment D</td>
+          </tr>
+          <tr>
+            <td class="row-label">
+              <span class="pill pill-uncertainty" style="margin-right: 8px;">Base</span>
+              Base Case
+            </td>
+            <td class="num cell-value">128,400</td>
+            <td class="cell-value">124,100–132,800</td>
+            <td><span class="pill pill-uncertainty">Medium</span></td>
+            <td class="cell-note">Plan to base case · standard allocation</td>
+          </tr>
+          <tr>
+            <td class="row-label">
+              <span class="pill pill-positive" style="margin-right: 8px;">Upside</span>
+              Upside Scenario
+            </td>
+            <td class="num cell-value positive">137,600</td>
+            <td class="cell-value">133,500–141,800</td>
+            <td><span class="pill pill-positive">Low</span></td>
+            <td class="cell-note">Monitor for upside realization</td>
+          </tr>
+          <tr>
+            <td class="row-label">
+              <span class="pill pill-negative" style="margin-right: 8px;">Stress</span>
+              Stress Case
+            </td>
+            <td class="num cell-value negative">109,500</td>
+            <td class="cell-value">102,800–115,100</td>
+            <td><span class="pill pill-negative">Critical</span></td>
+            <td class="cell-note">Prepare contingency · document decision threshold</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 5 — Forecast signal summary (driver grid)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="row-between" style="margin-bottom: var(--space-4);">
+      <h2>Forecast Signal Summary</h2>
+      <span class="meta-mono">5 drivers · Historical Window</span>
+    </div>
+    <div class="signal-grid">
+      <div class="signal-card">
+        <div class="sig-label">Driver A</div>
+        <div class="sig-row">
+          <span class="sig-k">Forecast Impact</span>
+          <span class="sig-v positive">Favorable</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Confidence</span>
+          <span class="sig-v uncertainty">Medium</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Watch Item</span>
+          <span class="sig-v">Trend stability</span>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-label">Driver B</div>
+        <div class="sig-row">
+          <span class="sig-k">Forecast Impact</span>
+          <span class="sig-v">Neutral</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Confidence</span>
+          <span class="sig-v">High</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Watch Item</span>
+          <span class="sig-v">Recent level shift</span>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-label">Driver C</div>
+        <div class="sig-row">
+          <span class="sig-k">Forecast Impact</span>
+          <span class="sig-v negative">Unfavorable</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Confidence</span>
+          <span class="sig-v uncertainty">Low</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Watch Item</span>
+          <span class="sig-v">Directional uncertainty</span>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-label">Driver D</div>
+        <div class="sig-row">
+          <span class="sig-k">Forecast Impact</span>
+          <span class="sig-v positive">Favorable</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Confidence</span>
+          <span class="sig-v">Medium</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Watch Item</span>
+          <span class="sig-v">Segment concentration</span>
+        </div>
+      </div>
+      <div class="signal-card">
+        <div class="sig-label">Driver E</div>
+        <div class="sig-row">
+          <span class="sig-k">Forecast Impact</span>
+          <span class="sig-v uncertainty">Uncertain</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Confidence</span>
+          <span class="sig-v uncertainty">Low</span>
+        </div>
+        <div class="sig-row">
+          <span class="sig-k">Watch Item</span>
+          <span class="sig-v">Assumption sensitivity</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 6 — Segment planning watchlist (A–D)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="row-between" style="margin-bottom: var(--space-4);">
+      <h2>Segment Planning Watchlist</h2>
+      <span class="meta-mono">4 segments · Forecast Window</span>
+    </div>
+    <div class="dt-wrap">
+      <table class="dt">
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th class="num">Forecasted Value</th>
+            <th class="num">Change vs Baseline</th>
+            <th>Stability</th>
+            <th>Planning Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Segment A</td>
+            <td class="num cell-value">34,200</td>
+            <td class="num cell-value positive">+3.1%</td>
+            <td><span class="pill pill-positive">Stable</span></td>
+            <td class="cell-note">Allocate to base case</td>
+          </tr>
+          <tr>
+            <td class="row-label">Segment B</td>
+            <td class="num cell-value">28,900</td>
+            <td class="num cell-value">+1.5%</td>
+            <td><span class="pill pill-uncertainty">Moderate</span></td>
+            <td class="cell-note">Monitor trend direction</td>
+          </tr>
+          <tr>
+            <td class="row-label">Segment C</td>
+            <td class="num cell-value">22,700</td>
+            <td class="num cell-value negative">−2.8%</td>
+            <td><span class="pill pill-uncertainty">Moderate</span></td>
+            <td class="cell-note">Review assumption sensitivity</td>
+          </tr>
+          <tr>
+            <td class="row-label">Segment D</td>
+            <td class="num cell-value">42,600</td>
+            <td class="num cell-value negative">−5.4%</td>
+            <td><span class="pill pill-negative">Watch</span></td>
+            <td class="cell-note">Review before final planning lock · reserve buffer</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="meta" style="margin-top: var(--space-3);">
+      Segment D is the primary planning watch item. Segment sample sizes range from 1,800–8,400 observations per Forecast Window.
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 7 — Forecast accuracy / caveat strip
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="row-between" style="margin-bottom: var(--space-4);">
+      <h2>Forecast Accuracy &amp; Caveats</h2>
+      <span class="meta-mono">Backtest Window · Historical Window</span>
+    </div>
+    <div class="accuracy-strip">
+      <div class="accuracy-mini">
+        <div class="acc-label">Historical Accuracy</div>
+        <div class="acc-value">±3.4%</div>
+        <div class="acc-detail">Mean absolute forecast error · Backtest Window</div>
+      </div>
+      <div class="accuracy-mini">
+        <div class="acc-label">Bias Direction</div>
+        <div class="acc-value acc-unc">−0.6%</div>
+        <div class="acc-detail">Slight over-forecast bias · 12-period backtest</div>
+      </div>
+      <div class="accuracy-mini">
+        <div class="acc-label">Interval Coverage</div>
+        <div class="acc-value acc-pos">82%</div>
+        <div class="acc-detail">80% prediction interval · 12-period backtest</div>
+      </div>
+      <div class="accuracy-mini">
+        <div class="acc-label">Caveats</div>
+        <div class="acc-value acc-unc">4 noted</div>
+        <div class="acc-detail">Limited historical window · unstable recent trend · missing future events · assumption sensitivity</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 8 — Recommended planning action
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="action-section">
+  <div class="container">
+    <h2 style="color: var(--accent); margin-bottom: var(--space-2);">Recommended Planning Action</h2>
+    <p class="meta-mono" style="margin-bottom: var(--space-4);">Forecast Object A · Forecast Version A · Next Forecast Refresh</p>
+    <ul class="action-list">
+      <li class="action-item">
+        <span class="action-num">1</span>
+        <div class="action-body">
+          <div class="action-title">Plan to base case</div>
+          <div class="action-detail">Allocate planning resources using the Base Case forecast of 128,400 units across Forecast Window. Base case is within expected range and historical accuracy is ±3.4%.</div>
+        </div>
+      </li>
+      <li class="action-item">
+        <span class="action-num">2</span>
+        <div class="action-body">
+          <div class="action-title">Reserve buffer for downside scenario</div>
+          <div class="action-detail">Maintain a 6,200-unit planning buffer to cover the gap between Base Case and Downside Scenario. Downside Scenario forecasts 118,900 units (80% interval: 118,900–122,400) with high planning risk.</div>
+        </div>
+      </li>
+      <li class="action-item">
+        <span class="action-num">3</span>
+        <div class="action-body">
+          <div class="action-title">Review Segment D before planning lock</div>
+          <div class="action-detail">Segment D shows −5.4% decline vs baseline and is flagged as Watch. This segment is the largest contributor (42,600 units) and carries the highest planning uncertainty. Review Segment D assumptions, sample sizes, and trend direction before finalising the planning cycle.</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 9 — Minimal footer
+   ═════════════════════════════════════════════════════════════════════ -->
+<footer class="pagefoot">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h4>Template</h4>
+        <p>Compact forecast / planning dashboard reference template for the data-scientist skill. Replace all placeholder data with real values. Uses tokenized CSS for reusable dashboard styling.</p>
+      </div>
+      <div>
+        <h4>Source &amp; Freshness</h4>
+        <p>Source Table A · Forecast Version A · Forecast Method A · Owner Group A. Last refreshed 42 minutes ago. Next refresh at Next Forecast Refresh.</p>
+      </div>
+      <div>
+        <h4>Definitions</h4>
+        <p>Base Case: most likely outcome. Downside/Upside: 80% prediction interval bounds. Stress Case: adverse scenario beyond forecast interval. Planning Gap: difference between expected and required capacity.</p>
+      </div>
+      <div>
+        <h4>Caveats</h4>
+        <p>Forecasts are based on historical patterns and stated assumptions. They do not account for unobserved future events, structural breaks, or assumption violations. All values are neutral placeholders.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body></html>

@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Executive KPI Dashboard · Compact</title>
+  <style>
+    /* ════════════════════════════════════════════════════════════════════
+       TOKENS
+       ════════════════════════════════════════════════════════════════════ */
+    :root {
+      --bg:            #0a0a10;
+      --surface:       #14141e;
+      --surface-raised:#1b1b28;
+      --surface-wash:  #101018;
+
+      --fg:            #eaeaef;
+      --fg-2:          #b8b8c4;
+      --muted:         #7e7e8e;
+      --meta:          #555562;
+
+      --border:        #1e1e2c;
+      --border-soft:   #171723;
+
+      --accent:        #c8960c;
+      --accent-soft:   color-mix(in oklch, var(--accent) 18%, transparent);
+
+      --success:       #2ea85a;
+      --warn:          #c8960c;
+      --danger:        #d44a3a;
+
+      --success-soft:  color-mix(in oklch, var(--success) 14%, transparent);
+      --warn-soft:     color-mix(in oklch, var(--warn) 14%, transparent);
+      --danger-soft:   color-mix(in oklch, var(--danger) 14%, transparent);
+
+      --font-display:  'Iowan Old Style', Charter, Georgia, 'Times New Roman', serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      --font-mono:     ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      --text-xs:       11px;
+      --text-sm:       13px;
+      --text-base:     15px;
+      --text-lg:       18px;
+      --text-xl:       22px;
+      --text-2xl:      28px;
+      --text-3xl:      40px;
+
+      --leading-body:  1.55;
+      --leading-tight: 1.15;
+
+      --space-1:       4px;
+      --space-2:       8px;
+      --space-3:       12px;
+      --space-4:       16px;
+      --space-5:       20px;
+      --space-6:       24px;
+      --space-8:       32px;
+      --space-10:      40px;
+
+      --radius-sm:     6px;
+      --radius-md:     10px;
+      --radius-lg:     14px;
+
+      --container-max: 1280px;
+      --gutter:        28px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESET & BASE
+       ════════════════════════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading-body);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: var(--space-10);
+    }
+    p { text-wrap: pretty; }
+    h1, h2 { text-wrap: balance; }
+
+    .container {
+      max-width: var(--container-max);
+      margin-inline: auto;
+      padding-inline: var(--gutter);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       1. HEADER BAR
+       ════════════════════════════════════════════════════════════════════ */
+    .dash-header {
+      border-bottom: 1px solid var(--border);
+      padding-block: var(--space-4);
+    }
+    .dash-header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+    }
+    .dash-header-question {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+    }
+    .dash-header-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .dash-header-meta-item {
+      font-size: var(--text-sm);
+      color: var(--muted);
+    }
+    .dash-header-meta-item strong {
+      color: var(--fg-2);
+      font-weight: 500;
+    }
+    .freshness {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       2. VERDICT BAND
+       ════════════════════════════════════════════════════════════════════ */
+    .verdict-band {
+      margin-top: var(--space-4);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      background: var(--warn-soft);
+      border-left: 4px solid var(--warn);
+    }
+    .verdict-status {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .verdict-pill {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      background: var(--warn);
+      color: var(--bg);
+    }
+    .verdict-gap {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--warn);
+    }
+    .verdict-decision {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--fg);
+      max-width: 42ch;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       3. KPI STRIP — 4 cards
+       ════════════════════════════════════════════════════════════════════ */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .kpi-card-primary {
+      border-color: var(--accent);
+      background: color-mix(in oklch, var(--surface) 92%, var(--accent));
+    }
+    .kpi-label {
+      font-size: var(--text-xs);
+      font-family: var(--font-mono);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .kpi-primary .kpi-label { color: var(--accent); }
+    .kpi-value {
+      font-family: var(--font-display);
+      font-size: var(--text-3xl);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: var(--leading-tight);
+      color: var(--fg);
+    }
+    .kpi-primary .kpi-value { color: var(--accent); }
+    .kpi-context {
+      font-size: var(--text-sm);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .kpi-delta {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+    .kpi-delta-up   { color: var(--success); }
+    .kpi-delta-down { color: var(--danger); }
+    .kpi-denominator {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: auto;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       4. STATUS vs TARGET (compact)
+       ════════════════════════════════════════════════════════════════════ */
+    .dash-section {
+      margin-top: var(--space-8);
+    }
+    .dash-section-title {
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      margin-bottom: var(--space-3);
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .panel-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-3);
+    }
+    .progress-track {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: var(--space-3) 0;
+    }
+    .progress-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--warn);
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-block: var(--space-2);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .status-row:last-child { border-bottom: 0; }
+    .status-row-label {
+      font-size: var(--text-sm);
+      color: var(--muted);
+    }
+    .status-row-value {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       5. DRIVERS TABLE (top 3)
+       ════════════════════════════════════════════════════════════════════ */
+    .drivers-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .drivers-table th {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 500;
+      text-align: left;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border);
+    }
+    .drivers-table th.num-col { text-align: right; }
+    .drivers-table td {
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: top;
+    }
+    .drivers-table .num-col {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+    .driver-impact-bar {
+      display: inline-block;
+      height: 4px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-right: var(--space-2);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       6. ACTION PANEL
+       ════════════════════════════════════════════════════════════════════ */
+    .action-panel {
+      background: var(--surface);
+      border: 1px solid var(--accent);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+    .action-panel-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: var(--space-3);
+    }
+    .action-list {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+    }
+    .action-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--fg-2);
+    }
+    .action-item-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--accent);
+      flex-shrink: 0;
+      width: 18px;
+      text-align: right;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       7. FOOTER (compact)
+       ════════════════════════════════════════════════════════════════════ */
+    .dash-footer {
+      margin-top: var(--space-8);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--border);
+      color: var(--meta);
+      font-size: var(--text-xs);
+      line-height: 1.6;
+    }
+    .dash-footer-inner {
+      display: flex;
+      gap: var(--space-8);
+      flex-wrap: wrap;
+    }
+    .dash-footer-col {
+      flex: 1 1 240px;
+      min-width: 0;
+    }
+    .dash-footer-col-title {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-2);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       RESPONSIVE
+       ════════════════════════════════════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 820px) {
+      .verdict-band { flex-direction: column; align-items: flex-start; }
+      .dash-header-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 520px) {
+      .kpi-strip { grid-template-columns: 1fr; }
+      .container { padding-inline: var(--space-4); }
+      .verdict-decision { font-size: var(--text-base); }
+      .dash-footer-inner { flex-direction: column; gap: var(--space-5); }
+    }
+    @media print {
+      body { background: #fff; color: #000; }
+      .dash-header { border-color: #ccc; }
+      .kpi-card, .panel, .action-panel { background: #fff; border: 1px solid #ccc; }
+      .verdict-band { background: #f5f5f5; border: 1px solid #ccc; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+   1. HEADER
+   ════════════════════════════════════════════════════════════════════════ -->
+<header class="dash-header">
+  <div class="container dash-header-inner">
+    <h1 class="dash-header-question">Are we on track against the primary business target?</h1>
+    <div class="dash-header-meta">
+      <span class="dash-header-meta-item">Scope: <strong>All Segments · Product Line A</strong></span>
+      <span class="dash-header-meta-item">Period: <strong>Jan 1 – May 17, 2026</strong></span>
+      <span class="dash-header-meta-item">Source: <strong>Internal Reporting</strong></span>
+      <span class="freshness">Updated May 18 09:42 UTC</span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     2. EXECUTIVE VERDICT BAND
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="verdict-band">
+    <div class="verdict-status">
+      <span class="verdict-pill">At Risk</span>
+      <span>Primary metric at <strong class="verdict-gap">70.6%</strong> of year-to-date target</span>
+    </div>
+    <p class="verdict-decision">Accelerate Q2 initiatives. Re-forecast annual target by June 15.</p>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     3. KPI STRIP — 4 cards
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="kpi-strip" aria-label="Key performance indicators">
+
+    <!-- Primary KPI -->
+    <div class="kpi-card kpi-card-primary kpi-primary">
+      <span class="kpi-label">Primary Metric</span>
+      <span class="kpi-value">847.2K</span>
+      <span class="kpi-context">
+        of 1.2M target
+        <span class="kpi-delta kpi-delta-up">▲ 4.8%</span>
+      </span>
+      <span class="kpi-denominator">n = 12,450 · 5 segments</span>
+    </div>
+
+    <!-- Target gap -->
+    <div class="kpi-card">
+      <span class="kpi-label">Target Gap</span>
+      <span class="kpi-value" style="color: var(--warn);">−352.8K</span>
+      <span class="kpi-context">
+        −29.4% below YTD target
+      </span>
+      <span class="kpi-denominator">YTD expected: 940K</span>
+    </div>
+
+    <!-- Change vs prior period -->
+    <div class="kpi-card">
+      <span class="kpi-label">Change vs Prior Period</span>
+      <span class="kpi-value">
+        <span class="kpi-delta kpi-delta-up">+12.4%</span>
+      </span>
+      <span class="kpi-context">vs Jan–May 2025</span>
+      <span class="kpi-denominator">n = 11,820 prior period</span>
+    </div>
+
+    <!-- Risk / confidence -->
+    <div class="kpi-card">
+      <span class="kpi-label">Risk / Confidence Status</span>
+      <span class="kpi-value" style="font-size: var(--text-2xl);"><span style="color: var(--warn);">3</span> <span style="font-size: var(--text-sm); color: var(--muted);">flags</span> · <span style="color: var(--success);">High</span></span>
+      <span class="kpi-context">
+        <span style="color: var(--danger);">1 high</span>
+        <span style="color: var(--muted);">2 medium</span>
+      </span>
+      <span class="kpi-denominator">18 monitors · 98.2% completeness</span>
+    </div>
+
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     4. STATUS vs TARGET (compact)
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="dash-section">
+    <h2 class="dash-section-title">Status vs Target</h2>
+    <div class="panel">
+      <span class="panel-label">Year-to-date progress</span>
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-1);">
+        <span style="font-size: var(--text-xl); font-weight: 600; font-family: var(--font-display); color: var(--warn);">70.6%</span>
+        <span style="font-size: var(--text-sm); color: var(--muted);">847.2K of 1.2M</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width: 70.6%;"></div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-1) var(--space-8); margin-top: var(--space-3);">
+        <div class="status-row">
+          <span class="status-row-label">Gap to target</span>
+          <span class="status-row-value" style="color: var(--warn);">−352.8K</span>
+        </div>
+        <div class="status-row">
+          <span class="status-row-label">Forecast (current pace)</span>
+          <span class="status-row-value" style="color: var(--warn);">1.02M</span>
+        </div>
+        <div class="status-row">
+          <span class="status-row-label">Days remaining</span>
+          <span class="status-row-value">228 of 365</span>
+        </div>
+        <div class="status-row">
+          <span class="status-row-label">Forecast vs target</span>
+          <span class="status-row-value" style="color: var(--danger);">−15.0%</span>
+        </div>
+        <div class="status-row">
+          <span class="status-row-label">Required daily rate</span>
+          <span class="status-row-value">1,548 vs 2,860 plan</span>
+        </div>
+        <div class="status-row">
+          <span class="status-row-label">YOY change / confidence</span>
+          <span class="status-row-value" style="color: var(--success);">+12.4%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     5. TOP 3 DRIVERS TABLE
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="dash-section">
+    <h2 class="dash-section-title">Top Drivers · Segment Contribution</h2>
+    <div class="panel" style="padding: 0; overflow-x: auto;">
+      <table class="drivers-table">
+        <thead>
+          <tr>
+            <th>Segment</th>
+            <th>Contribution</th>
+            <th class="num-col">Current</th>
+            <th class="num-col">Target</th>
+            <th class="num-col">% Achieved</th>
+            <th class="num-col">YOY Change</th>
+            <th class="num-col">n</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Segment A</strong></td>
+            <td><span class="driver-impact-bar" style="width: 54px; background: var(--accent);"></span> 36%</td>
+            <td class="num-col">305.0K</td>
+            <td class="num-col">420K</td>
+            <td class="num-col" style="color: var(--warn);">72.6%</td>
+            <td class="num-col" style="color: var(--success);">+18.2%</td>
+            <td class="num-col">4,520</td>
+          </tr>
+          <tr>
+            <td><strong>Segment B</strong></td>
+            <td><span class="driver-impact-bar" style="width: 42px; background: var(--accent);"></span> 28%</td>
+            <td class="num-col">237.2K</td>
+            <td class="num-col">340K</td>
+            <td class="num-col" style="color: var(--warn);">69.8%</td>
+            <td class="num-col" style="color: var(--success);">+9.4%</td>
+            <td class="num-col">5,180</td>
+          </tr>
+          <tr>
+            <td><strong>Segment C</strong></td>
+            <td><span class="driver-impact-bar" style="width: 28px; background: var(--accent);"></span> 19%</td>
+            <td class="num-col">161.0K</td>
+            <td class="num-col">250K</td>
+            <td class="num-col" style="color: var(--warn);">64.4%</td>
+            <td class="num-col" style="color: var(--success);">+10.1%</td>
+            <td class="num-col">2,140</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size: var(--text-xs); color: var(--meta); margin-top: var(--space-2);">Segments D and E (combined 17% contribution) omitted for brevity. Full decomposition available in the extended dashboard.</p>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+     6. RECOMMENDED ACTION PANEL
+     ════════════════════════════════════════════════════════════════════ -->
+  <section class="dash-section">
+    <div class="action-panel">
+      <p class="action-panel-title">Recommended Actions</p>
+      <ol class="action-list">
+        <li class="action-item">
+          <span class="action-item-num">1</span>
+          <span>Accelerate Segment A opportunity queue: prioritize closing 3 late-stage items before end of Q2. Estimated impact: +45–65K.</span>
+        </li>
+        <li class="action-item">
+          <span class="action-item-num">2</span>
+          <span>Re-forecast annual target: current pace projects 1.02M vs 1.2M target. Prepare revised forecast for board review by June 15.</span>
+        </li>
+        <li class="action-item">
+          <span class="action-item-num">3</span>
+          <span>Address Segment C conversion decline: conversion dropped 3.2pp in Segment C. Assign dedicated review with segment owners by May 25.</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════════════════
+   7. FOOTER
+   ════════════════════════════════════════════════════════════════════ -->
+<footer class="container dash-footer">
+  <div class="dash-footer-inner">
+    <div class="dash-footer-col">
+      <p class="dash-footer-col-title">Data Sources &amp; Caveats</p>
+      <p>Internal reporting system. Data extracted May 18, 2026 09:42 UTC. Primary metric derived from transactional records with 98.2% completeness. Segment C sample (n = 2,140) carries wider error margins; interpret with appropriate caution. Seasonal adjustments not yet applied to forecast.</p>
+    </div>
+    <div class="dash-footer-col">
+      <p class="dash-footer-col-title">Metric Definitions</p>
+      <p>Primary Metric: placeholder aggregate across all segments. Target set annually, allocated monthly. n values reflect distinct units in the reporting period. All figures rounded to nearest hundred or tenth of a percent.</p>
+    </div>
+    <div class="dash-footer-col">
+      <p class="dash-footer-col-title">Refresh Cadence</p>
+      <p>Data refreshes daily at 08:00 UTC. Full audit and reconciliation runs weekly (Sunday). Forecast models updated on the 1st and 15th of each month. Next scheduled review: May 25, 2026.</p>
+    </div>
+  </div>
+</footer>
+
+</body></html>

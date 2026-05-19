@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dataset A — Data Quality Audit · Compact</title>
+  <style>
+    /* ─── tokens ─────────────────────────────────────────────────────── */
+    :root {
+      /* surfaces — true near-black */
+      --bg:          #0d0d0d;
+      --surface:     #151515;
+      --surface-alt: #1c1c1c;
+
+      /* foreground */
+      --fg:    #e8e8e8;
+      --muted: #8a8a8a;
+      --meta:  #6a6a6a;
+
+      /* borders */
+      --border:        #292929;
+      --border-strong: #3d3d3d;
+
+      /* accent — amber/gold, reserved for warnings, issue counts, decision emphasis */
+      --accent:      oklch(72% 0.14 80);
+      --accent-soft: color-mix(in oklch, var(--accent) 12%, transparent);
+
+      /* status — green pass/ready, red fail/blocking */
+      --positive:        oklch(58% 0.13 160);
+      --positive-bg:     color-mix(in oklch, var(--positive) 14%, transparent);
+      --positive-border: color-mix(in oklch, var(--positive) 25%, transparent);
+
+      --negative:        oklch(56% 0.17 22);
+      --negative-bg:     color-mix(in oklch, var(--negative) 14%, transparent);
+      --negative-border: color-mix(in oklch, var(--negative) 25%, transparent);
+
+      --warn:     oklch(68% 0.12 80);
+      --warn-bg:  color-mix(in oklch, var(--warn) 12%, transparent);
+
+      --neutral-bg:     color-mix(in oklch, var(--fg) 5%, transparent);
+      --neutral-border: var(--border);
+
+      /* typography */
+      --font-display: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+      --font-mono:    ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      /* scale */
+      --text-xs:  11px;
+      --text-sm:  12px;
+      --text-base: 13.5px;
+      --text-md:  15px;
+      --text-lg:  18px;
+      --text-xl:  22px;
+      --text-2xl: 28px;
+      --text-3xl: 36px;
+
+      /* spacing */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+
+      /* radii */
+      --radius-sm: 4px;
+      --radius:    8px;
+      --radius-lg: 12px;
+      --radius-pill: 9999px;
+
+      /* layout */
+      --container: 1140px;
+      --gutter: 24px;
+
+      --leading: 1.5;
+      --leading-tight: 1.25;
+    }
+
+    /* ─── reset & base ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    p { text-wrap: pretty; }
+    h2 { font-family: var(--font-display); text-wrap: balance; font-size: var(--text-xl); font-weight: 600; letter-spacing: -0.015em; }
+
+    /* ─── layout ─────────────────────────────────────────────────────── */
+    .container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+    .section { padding-block: var(--space-6); }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    .row       { display: flex; align-items: center; gap: var(--space-4); }
+    .row-wrap  { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .stack-2   { display: flex; flex-direction: column; gap: var(--space-2); }
+    .stack-3   { display: flex; flex-direction: column; gap: var(--space-3); }
+    .stack-4   { display: flex; flex-direction: column; gap: var(--space-4); }
+
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+
+    /* ─── type ───────────────────────────────────────────────────────── */
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--meta);
+    }
+    .meta      { font-size: var(--text-xs); color: var(--meta); }
+    .meta-mono { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta); }
+    .num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .muted { color: var(--muted); }
+
+    /* ─── dataset identity header (compact) ──────────────────────────── */
+    .ds-header {
+      padding-block: var(--space-4);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .ds-header .ds-title {
+      font-family: var(--font-display);
+      font-size: var(--text-md);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .ds-header .ds-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-1) var(--space-5);
+      margin-top: var(--space-2);
+    }
+    .ds-header .ds-meta-item {
+      font-size: var(--text-xs);
+      line-height: 1.6;
+    }
+    .ds-header .ds-meta-item .dml-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+    }
+    .ds-header .ds-meta-item .dml-value {
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+    }
+    .freshness {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta);
+    }
+    .freshness-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--positive);
+      flex-shrink: 0;
+    }
+
+    /* ─── verdict band ───────────────────────────────────────────────── */
+    .verdict-band {
+      padding-block: var(--space-5);
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+    .verdict-band .vdt-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-1);
+    }
+    .verdict-band .vdt-value {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .verdict-band .vdt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+    }
+    .verdict-band .vdt-item .vdt-item-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: 2px;
+    }
+    .verdict-band .vdt-item .vdt-item-value {
+      font-size: var(--text-sm);
+      font-weight: 500;
+    }
+    .verdict-band .vdt-item .vdt-item-sub {
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: 2px;
+    }
+    .vdt-warn { color: var(--accent); }
+
+    /* ─── KPI strip (4 cards) ────────────────────────────────────────── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .kpi-card .kpi-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: var(--space-2);
+    }
+    .kpi-card .kpi-value {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 2.5vw, 32px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+    }
+    .kpi-card .kpi-value.positive { color: var(--positive); }
+    .kpi-card .kpi-value.warn     { color: var(--accent); }
+    .kpi-card .kpi-sub {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      margin-top: var(--space-1);
+    }
+    .kpi-card .kpi-denom {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: var(--space-1);
+    }
+
+    /* ─── status pill ────────────────────────────────────────────────── */
+    .pill {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+    .pill-positive { background: var(--positive-bg); color: var(--positive); }
+    .pill-negative { background: var(--negative-bg); color: var(--negative); }
+    .pill-warn     { background: var(--warn-bg);     color: var(--warn); }
+    .pill-neutral  { background: var(--neutral-bg);  color: var(--meta);  border: 1px solid var(--neutral-border); }
+
+    /* ─── compact data table ─────────────────────────────────────────── */
+    .dt-wrap { overflow-x: auto; }
+    .dt {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .dt thead th {
+      background: var(--surface-alt);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+      border-bottom: 1px solid var(--border-strong);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .dt thead th.act { text-align: center; }
+    .dt tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .dt tbody tr:hover { background: var(--surface-alt); }
+    .dt tbody tr:last-child td { border-bottom: none; }
+    .dt .row-label { font-weight: 600; font-size: var(--text-sm); }
+    .dt .cell-sample { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta); }
+    .dt .cell-note { font-size: var(--text-xs); color: var(--muted); line-height: 1.5; }
+
+    /* ─── field group summary cards ──────────────────────────────────── */
+    .fg-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .fg-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-3);
+    }
+    .fg-card .fg-name {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      margin-bottom: var(--space-2);
+    }
+    .fg-card .fg-issue {
+      font-size: var(--text-xs);
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: var(--space-2);
+    }
+    .fg-card .fg-stat {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+    }
+    .fg-card.fg-fail { border-left: 3px solid var(--negative); }
+    .fg-card.fg-warn { border-left: 3px solid var(--accent); }
+    .fg-card.fg-pass { border-left: 3px solid var(--positive); }
+
+    /* ─── blocking issues table ──────────────────────────────────────── */
+    .issue-table-wrap { overflow-x: auto; }
+    .issue-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .issue-table thead th {
+      background: var(--surface-alt);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+      border-bottom: 1px solid var(--border-strong);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .issue-table tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .issue-table tbody tr:hover { background: var(--surface-alt); }
+    .issue-table tbody tr:last-child td { border-bottom: none; }
+    .issue-table .issue-impact { font-size: var(--text-xs); color: var(--meta); line-height: 1.5; }
+    .issue-table .issue-fix   { font-size: var(--text-xs); color: var(--muted); line-height: 1.5; }
+
+    /* ─── recommended actions ────────────────────────────────────────── */
+    .action-section {
+      padding-block: var(--space-6);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border-strong);
+      border-bottom: 1px solid var(--border-strong);
+    }
+    .action-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0; }
+    .action-item {
+      display: flex; gap: var(--space-4); align-items: flex-start;
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--border);
+    }
+    .action-item:first-child { border-top: none; }
+    .action-item .action-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .action-item .action-body .action-title {
+      font-weight: 600;
+      font-size: var(--text-sm);
+      margin-bottom: 2px;
+    }
+    .action-item .action-body .action-detail {
+      font-size: var(--text-xs);
+      color: var(--muted);
+    }
+
+    /* ─── footer ─────────────────────────────────────────────────────── */
+    .pagefoot {
+      padding-block: var(--space-6);
+      color: var(--meta);
+      font-size: var(--text-xs);
+      line-height: 1.7;
+    }
+    .pagefoot .foot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+    }
+    .pagefoot .foot-grid h4 {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-1);
+    }
+    .pagefoot .foot-grid p { font-size: var(--text-xs); line-height: 1.6; }
+
+    /* ─── responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 920px) {
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+      .fg-grid   { grid-template-columns: repeat(2, 1fr); }
+      .grid-4    { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      :root { --gutter: 16px; }
+      .kpi-strip { grid-template-columns: 1fr; }
+      .fg-grid   { grid-template-columns: 1fr; }
+      .grid-4    { grid-template-columns: 1fr; }
+      .verdict-band .vdt-value { font-size: var(--text-lg); }
+      .verdict-band .vdt-grid { grid-template-columns: 1fr; }
+      .pagefoot .foot-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── print ──────────────────────────────────────────────────────── */
+    @media print {
+      :root {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --surface-alt: #f5f5f5;
+        --fg: #111111;
+        --muted: #555555;
+        --meta: #777777;
+        --border: #cccccc;
+        --border-strong: #999999;
+        --accent: #b8860b;
+        --positive: #1d7d4c;
+        --negative: #b72b2b;
+      }
+      body { font-size: 11px; }
+      .section { padding-block: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 1 — Compact dataset identity header
+   ═════════════════════════════════════════════════════════════════════ -->
+<header class="ds-header">
+  <div class="container">
+    <div class="row-between">
+      <div>
+        <h1 class="ds-title">Dataset A — Source Table A · Data Quality Audit</h1>
+        <div class="ds-meta-row">
+          <div class="ds-meta-item">
+            <span class="dml-label">Dataset</span> <span class="dml-value">Dataset A</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Source</span> <span class="dml-value">Source Table A</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Owner</span> <span class="dml-value">Owner Group A</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Window</span> <span class="dml-value">Audit Window</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Rows</span> <span class="dml-value">1,248,000</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Columns</span> <span class="dml-value">43</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Version</span> <span class="dml-value">Audit Version 3</span>
+          </div>
+          <div class="ds-meta-item">
+            <span class="dml-label">Freshness</span> <span class="dml-value">Current</span>
+          </div>
+        </div>
+      </div>
+      <span class="freshness">
+        <span class="freshness-dot"></span>
+        Last refreshed 42 minutes ago
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 2 — Readiness verdict band (before KPI cards)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="verdict-band">
+  <div class="container">
+    <p class="vdt-label">Data Readiness Verdict</p>
+    <p class="vdt-value">
+      <span class="vdt-warn">Conditional pass</span> — source usable with remediation required
+    </p>
+    <div class="vdt-grid">
+      <div class="vdt-item">
+        <div class="vdt-item-label">Verdict</div>
+        <div class="vdt-item-value vdt-warn">Conditional pass</div>
+        <div class="vdt-item-sub">Remediation required before production</div>
+      </div>
+      <div class="vdt-item">
+        <div class="vdt-item-label">Required Action</div>
+        <div class="vdt-item-value">Resolve blocking validation failures before production use</div>
+        <div class="vdt-item-sub">4 blocking issues · 28 total checks</div>
+      </div>
+      <div class="vdt-item">
+        <div class="vdt-item-label">Severity</div>
+        <div class="vdt-item-value vdt-warn">Medium</div>
+        <div class="vdt-item-sub">No critical schema violations</div>
+      </div>
+      <div class="vdt-item">
+        <div class="vdt-item-label">Next Checkpoint</div>
+        <div class="vdt-item-value">Next Audit Window</div>
+        <div class="vdt-item-sub">Re-audit after remediation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 3 — 4-card KPI strip
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow" style="margin-bottom: var(--space-3);">Data Quality Summary · Key Indicators</p>
+    <div class="kpi-strip">
+
+      <!-- Card 1: Total rows audited -->
+      <article class="kpi-card">
+        <div class="kpi-label">Rows Audited</div>
+        <div class="kpi-value num">1,248,000</div>
+        <div class="kpi-sub">Total rows · Source Table A · Audit Window</div>
+      </article>
+
+      <!-- Card 2: Completeness + Validity (combined) -->
+      <article class="kpi-card">
+        <div class="kpi-label">Completeness · Validity</div>
+        <div class="kpi-value num positive">97.8<span style="font-size:0.45em;opacity:0.7;">%</span></div>
+        <div class="kpi-sub">42 of 43 fields complete</div>
+        <div class="kpi-denom">99.1% valid · 1,236,768 of 1,248,000 rows</div>
+        <div class="kpi-sub" style="margin-top: 2px; color: var(--accent);">1 field has unexpected nulls · Field Group F</div>
+      </article>
+
+      <!-- Card 3: Duplicate rate -->
+      <article class="kpi-card">
+        <div class="kpi-label">Duplicate Rate</div>
+        <div class="kpi-value num warn">0.7<span style="font-size:0.45em;opacity:0.7;">%</span></div>
+        <div class="kpi-sub">8,736 of 1,248,000 rows</div>
+        <div class="kpi-denom">4,368 duplicate key pairs</div>
+      </article>
+
+      <!-- Card 4: Blocking issue count -->
+      <article class="kpi-card">
+        <div class="kpi-label">Blocking Issues</div>
+        <div class="kpi-value num warn">4 / 28</div>
+        <div class="kpi-sub">Blocking · 28 total quality checks</div>
+        <div class="kpi-sub" style="margin-top: 4px;">
+          <span class="pill pill-positive">19 PASS</span>
+          <span class="pill pill-warn" style="margin-left: 4px;">5 WARN</span>
+          <span class="pill pill-negative" style="margin-left: 4px;">4 FAIL</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 4 — Compact audit health table
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-3);">Audit Health · 8 Check Categories</h2>
+    <div class="dt-wrap">
+      <table class="dt">
+        <thead>
+          <tr>
+            <th>Check</th>
+            <th class="act">Status</th>
+            <th>Evidence</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Completeness</td>
+            <td style="text-align:center;"><span class="pill pill-warn">Warn</span></td>
+            <td><span class="cell-sample">42/43 fields complete · 1,248 rows with unexpected nulls (0.1%)</span></td>
+            <td class="cell-note">Resolve nulls in Field Group F before production use</td>
+          </tr>
+          <tr>
+            <td class="row-label">Schema Conformity</td>
+            <td style="text-align:center;"><span class="pill pill-positive">Pass</span></td>
+            <td><span class="cell-sample">43/43 columns match schema · 0 type mismatches</span></td>
+            <td class="cell-note">None required</td>
+          </tr>
+          <tr>
+            <td class="row-label">Range Validity</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Fail</span></td>
+            <td><span class="cell-sample">7,488 rows out of range (0.6%) · Field Groups D, E</span></td>
+            <td class="cell-note">Investigate source event. Flag or exclude outlier rows</td>
+          </tr>
+          <tr>
+            <td class="row-label">Duplicate Detection</td>
+            <td style="text-align:center;"><span class="pill pill-warn">Warn</span></td>
+            <td><span class="cell-sample">8,736 duplicate rows (0.7%) · 4,368 key collisions</span></td>
+            <td class="cell-note">Quarantine and deduplicate</td>
+          </tr>
+          <tr>
+            <td class="row-label">Referential Integrity</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Fail</span></td>
+            <td><span class="cell-sample">2,496 orphans (0.2%) · Field Group G</span></td>
+            <td class="cell-note">Trace missing reference keys. Add or exclude orphans</td>
+          </tr>
+          <tr>
+            <td class="row-label">Freshness</td>
+            <td style="text-align:center;"><span class="pill pill-positive">Pass</span></td>
+            <td><span class="cell-sample">Refreshed 42 min ago · 168/168 partitions · 0.05% late arrival</span></td>
+            <td class="cell-note">None required</td>
+          </tr>
+          <tr>
+            <td class="row-label">Null Policy</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Fail</span></td>
+            <td><span class="cell-sample">1,248 unexpected nulls (0.1%) · 1 required field in Field Group F</span></td>
+            <td class="cell-note">Backfill from source or apply default per data contract</td>
+          </tr>
+          <tr>
+            <td class="row-label">Type Consistency</td>
+            <td style="text-align:center;"><span class="pill pill-warn">Warn</span></td>
+            <td><span class="cell-sample">624 type mismatches (0.05%) · Field Group H</span></td>
+            <td class="cell-note">Cast-safe; non-blocking. Add length constraint to pipeline</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="meta" style="margin-top: var(--space-3);">
+      28 total checks across 8 categories. 19 pass, 5 warn, 4 fail. All counts from Audit Window over 1,248,000 rows.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 5 — Field group issue summary (cards)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-3);">Field Group Status · Field Groups A–H</h2>
+    <div class="fg-grid">
+
+      <div class="fg-card fg-pass">
+        <div class="fg-name">Field Group A</div>
+        <div class="fg-issue">No issues. 6/6 required fields complete.</div>
+        <div class="fg-stat">0 invalid · 0 type mismatches</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-positive">Clean</span></div>
+      </div>
+
+      <div class="fg-card fg-pass">
+        <div class="fg-name">Field Group B</div>
+        <div class="fg-issue">No issues. 5/5 required fields complete.</div>
+        <div class="fg-stat">0 invalid · 0 type mismatches</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-positive">Clean</span></div>
+      </div>
+
+      <div class="fg-card fg-pass">
+        <div class="fg-name">Field Group C</div>
+        <div class="fg-issue">No issues. 7/7 required fields complete. All values within accepted sets.</div>
+        <div class="fg-stat">0 invalid · 0 type mismatches</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-positive">Clean</span></div>
+      </div>
+
+      <div class="fg-card fg-fail">
+        <div class="fg-name">Field Group D</div>
+        <div class="fg-issue">Range violations in 2 numeric fields. Values outside [0.0, 100.0].</div>
+        <div class="fg-stat">3,744 invalid (0.30%) · 5/5 fields complete</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-negative">Fail</span></div>
+      </div>
+
+      <div class="fg-card fg-fail">
+        <div class="fg-name">Field Group E</div>
+        <div class="fg-issue">Range violations in 1 numeric field. Correlated with Field Group D.</div>
+        <div class="fg-stat">3,744 invalid (0.30%) · 4/4 fields complete</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-negative">Fail</span></div>
+      </div>
+
+      <div class="fg-card fg-fail">
+        <div class="fg-name">Field Group F</div>
+        <div class="fg-issue">1 required field has unexpected nulls. Null policy violation.</div>
+        <div class="fg-stat">1,248 nulls (0.10%) · 5/6 fields complete</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-negative">Fail</span></div>
+      </div>
+
+      <div class="fg-card fg-fail">
+        <div class="fg-name">Field Group G</div>
+        <div class="fg-issue">Referential integrity breach. Orphan keys detected.</div>
+        <div class="fg-stat">2,496 orphans (0.20%) · 4/4 fields complete</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-negative">Fail</span></div>
+      </div>
+
+      <div class="fg-card fg-warn">
+        <div class="fg-name">Field Group H</div>
+        <div class="fg-issue">Minor type coercion in 1 field. String-length violations.</div>
+        <div class="fg-stat">624 mismatches (0.05%) · 6/6 fields complete</div>
+        <div style="margin-top: var(--space-2);"><span class="pill pill-warn">Warn</span></div>
+      </div>
+
+    </div>
+    <p class="meta" style="margin-top: var(--space-3);">
+      Denominators: 1,248,000 rows per field group. Completeness = required fields non-null / total required.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 6 — Blocking remediation queue (top 4)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-3);">Blocking Issues · Remediation Queue</h2>
+    <div class="issue-table-wrap">
+      <table class="issue-table">
+        <thead>
+          <tr>
+            <th>Issue</th>
+            <th>Severity</th>
+            <th>Impact</th>
+            <th>Recommended Fix</th>
+            <th>Owner</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label">Issue A · Range validity — Field Group D</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Blocking</span></td>
+            <td class="issue-impact">3,744 rows (0.3%) out of bounds. Affects downstream aggregation.</td>
+            <td class="issue-fix">Investigate source event. Flag and exclude outlier rows.</td>
+            <td>Owner Group A</td>
+          </tr>
+          <tr>
+            <td class="row-label">Issue B · Range validity — Field Group E</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Blocking</span></td>
+            <td class="issue-impact">3,744 rows (0.3%) with zero values. Correlated with Field Group D.</td>
+            <td class="issue-fix">Validate ingestion logic for null-to-zero coalesce.</td>
+            <td>Owner Group A</td>
+          </tr>
+          <tr>
+            <td class="row-label">Issue C · Null policy violation — Field Group F</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Blocking</span></td>
+            <td class="issue-impact">1 required field has 1,248 unexpected nulls.</td>
+            <td class="issue-fix">Backfill from source or apply default per data contract.</td>
+            <td>Owner Group A</td>
+          </tr>
+          <tr>
+            <td class="row-label">Issue D · Referential integrity — Field Group G</td>
+            <td style="text-align:center;"><span class="pill pill-negative">Blocking</span></td>
+            <td class="issue-impact">2,496 orphan records. Cross-source joins will silently drop rows.</td>
+            <td class="issue-fix">Trace missing keys to source. Add or exclude orphans.</td>
+            <td>Owner Group A</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="meta" style="margin-top: var(--space-3);">
+      4 blocking issues assigned to Owner Group A. Blocking = cannot proceed to production.
+      Additional warnings (duplicate keys, type coercion) tracked in audit health table.
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 7 — Recommended data action (3 items)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="action-section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-4);">Recommended Data Action</h2>
+    <ol class="action-list">
+      <li class="action-item">
+        <span class="action-num">1</span>
+        <div class="action-body">
+          <div class="action-title">Fix blocking validation failures</div>
+          <div class="action-detail">Resolve Issues A–D (range validity, null policy, referential integrity). Target resolution: Next Audit Window. Owner: Owner Group A.</div>
+        </div>
+      </li>
+      <li class="action-item">
+        <span class="action-num">2</span>
+        <div class="action-body">
+          <div class="action-title">Quarantine duplicate records</div>
+          <div class="action-detail">Isolate 8,736 duplicate rows (4,368 key pairs). Apply deduplication rule. Retain quarantined set for traceability.</div>
+        </div>
+      </li>
+      <li class="action-item">
+        <span class="action-num">3</span>
+        <div class="action-body">
+          <div class="action-title">Re-audit after remediation</div>
+          <div class="action-detail">Run full audit pass on Next Audit Window. Verify all blocking issues resolved and field integrity restored. Escalate remaining failures.</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 8 — Minimal footer
+   ═════════════════════════════════════════════════════════════════════ -->
+<footer class="pagefoot">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h4>Template</h4>
+        <p>Data Quality Audit Dashboard · Compact Version<br>Reusable reference template for the data-scientist skill.</p>
+      </div>
+      <div>
+        <h4>Placeholder Data</h4>
+        <p>All names, metrics, and identifiers are neutral placeholders. No real claims or production data.</p>
+      </div>
+      <div>
+        <h4>Definitions</h4>
+        <p>Blocking = cannot proceed. Warn = should be addressed. Numerators / denominators shown for all rates.</p>
+      </div>
+      <div>
+        <h4>Caveats</h4>
+        <p>Single audit snapshot. Does not capture intra-window volatility. Re-audit after each remediation cycle.</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body></html>

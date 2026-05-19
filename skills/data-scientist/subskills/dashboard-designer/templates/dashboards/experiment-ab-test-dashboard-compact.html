@@ -1,0 +1,853 @@
+<!doctype html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Experiment A — A/B Test Dashboard · Compact</title>
+  <style>
+    /* ─── tokens ─────────────────────────────────────────────────────── */
+    :root {
+      /* surfaces — true near-black */
+      --bg:          #0d0d0d;
+      --surface:     #151515;
+      --surface-alt: #1c1c1c;
+
+      /* foreground */
+      --fg:    #e8e8e8;
+      --muted: #8a8a8a;
+      --meta:  #6a6a6a;
+
+      /* borders */
+      --border:        #292929;
+      --border-strong: #3d3d3d;
+
+      /* accent — amber/gold, reserved for lift/difference values only */
+      --accent:      oklch(72% 0.14 80);
+      --accent-soft: color-mix(in oklch, var(--accent) 12%, transparent);
+
+      /* status — green favorable, red unfavorable */
+      --positive:        oklch(58% 0.13 160);
+      --positive-bg:     color-mix(in oklch, var(--positive) 14%, transparent);
+      --positive-border: color-mix(in oklch, var(--positive) 25%, transparent);
+
+      --negative:        oklch(56% 0.17 22);
+      --negative-bg:     color-mix(in oklch, var(--negative) 14%, transparent);
+      --negative-border: color-mix(in oklch, var(--negative) 25%, transparent);
+
+      --warn:     oklch(68% 0.12 80);
+      --warn-bg:  color-mix(in oklch, var(--warn) 12%, transparent);
+
+      --neutral-bg:     color-mix(in oklch, var(--fg) 5%, transparent);
+      --neutral-border: var(--border);
+
+      /* typography — sans display + body, mono for numerics, labels, codes */
+      --font-display: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+      --font-body:    -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif;
+      --font-mono:    ui-monospace, 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+      /* scale */
+      --text-xs:  11px;
+      --text-sm:  12px;
+      --text-base: 13.5px;
+      --text-md:  15px;
+      --text-lg:  18px;
+      --text-xl:  22px;
+      --text-2xl: 28px;
+      --text-3xl: 36px;
+
+      /* spacing */
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+
+      /* radii */
+      --radius-sm: 4px;
+      --radius:    8px;
+      --radius-lg: 12px;
+      --radius-pill: 9999px;
+
+      /* layout */
+      --container: 1140px;
+      --gutter: 24px;
+
+      --leading: 1.5;
+      --leading-tight: 1.25;
+    }
+
+    /* ─── reset & base ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    p { text-wrap: pretty; }
+    h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+
+    /* ─── layout ─────────────────────────────────────────────────────── */
+    .container { max-width: var(--container); margin-inline: auto; padding-inline: var(--gutter); }
+    .section { padding-block: var(--space-8); }
+    .section + .section { border-top: 1px solid var(--border); }
+
+    .row       { display: flex; align-items: center; gap: var(--space-4); }
+    .row-wrap  { display: flex; align-items: center; flex-wrap: wrap; gap: var(--space-3); }
+    .row-between { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+    .stack     { display: flex; flex-direction: column; }
+    .stack-2   { display: flex; flex-direction: column; gap: var(--space-2); }
+    .stack-3   { display: flex; flex-direction: column; gap: var(--space-3); }
+    .stack-4   { display: flex; flex-direction: column; gap: var(--space-4); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-4); }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); }
+
+    /* ─── type ───────────────────────────────────────────────────────── */
+    h2 { font-size: var(--text-xl); font-weight: 600; letter-spacing: -0.015em; }
+    h3 { font-size: var(--text-md); font-weight: 600; letter-spacing: -0.01em; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--meta);
+    }
+    .meta      { font-size: var(--text-xs); color: var(--meta); }
+    .meta-mono { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta); }
+    .num {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .muted { color: var(--muted); }
+
+    /* ─── experiment identity header ─────────────────────────────────── */
+    .exp-header {
+      padding-block: var(--space-6);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-header .exp-title {
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-2);
+    }
+    .exp-header .exp-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-1) var(--space-6);
+    }
+    .exp-header .exp-meta-item {
+      font-size: var(--text-sm);
+      line-height: 1.7;
+    }
+    .exp-header .exp-meta-item .emo-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+    }
+    .exp-header .exp-meta-item .emo-value {
+      color: var(--fg);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+    }
+    .freshness {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--font-mono); font-size: var(--text-xs); color: var(--meta);
+    }
+    .freshness-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--positive);
+      flex-shrink: 0;
+    }
+    .freshness-dot.stale { background: var(--warn); }
+
+    /* ─── decision band ──────────────────────────────────────────────── */
+    .decision-band {
+      padding-block: var(--space-6);
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+    }
+    .decision-band .dec-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: var(--space-2);
+    }
+    .decision-band .dec-value {
+      font-size: var(--text-2xl);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .decision-band .dec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-4);
+    }
+    .decision-band .dec-item .dec-item-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: 4px;
+    }
+    .decision-band .dec-item .dec-item-value {
+      font-size: var(--text-md);
+      font-weight: 500;
+    }
+    .decision-band .dec-item .dec-item-sub {
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: 2px;
+    }
+    .dec-positive { color: var(--positive); }
+    .dec-warn    { color: var(--accent); }
+
+    /* ─── KPI strip ──────────────────────────────────────────────────── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+    }
+    .kpi-card .kpi-label {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: var(--space-2);
+    }
+    .kpi-card .kpi-value {
+      font-family: var(--font-display);
+      font-size: clamp(26px, 3vw, 38px);
+      font-weight: 600;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+    }
+    .kpi-card .kpi-value.accent  { color: var(--accent); }
+    .kpi-card .kpi-value.positive { color: var(--positive); }
+    .kpi-card .kpi-value.warn     { color: var(--accent); }
+    .kpi-card .kpi-sub {
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: var(--space-1);
+    }
+    .kpi-card .kpi-denom {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+      margin-top: var(--space-1);
+    }
+
+    /* ─── status pill ────────────────────────────────────────────────── */
+    .pill {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      line-height: 1.6;
+    }
+    .pill-positive { background: var(--positive-bg); color: var(--positive); }
+    .pill-negative { background: var(--negative-bg); color: var(--negative); }
+    .pill-warn     { background: var(--warn-bg);     color: var(--warn); }
+    .pill-neutral  { background: var(--neutral-bg);  color: var(--meta);  border: 1px solid var(--neutral-border); }
+
+    /* ─── comparison table ───────────────────────────────────────────── */
+    .cmp-table-wrap { overflow-x: auto; }
+    .cmp-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+    .cmp-table thead th {
+      background: var(--surface-alt);
+      padding: 8px 12px;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--meta);
+      border-bottom: 1px solid var(--border-strong);
+      text-align: left;
+      white-space: nowrap;
+    }
+    .cmp-table thead th.num { text-align: right; }
+    .cmp-table thead th.act { text-align: center; }
+    .cmp-table tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .cmp-table tbody tr:hover { background: var(--surface-alt); }
+    .cmp-table tbody tr:last-child td { border-bottom: none; }
+    .cmp-table .row-label {
+      font-weight: 600;
+      font-size: var(--text-sm);
+    }
+    .cmp-table .cell-value {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+    }
+    .cmp-table .cell-diff {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+    }
+    .cmp-table .cell-diff.positive { color: var(--positive); }
+    .cmp-table .cell-diff.negative { color: var(--negative); }
+    .cmp-table .cell-diff.accent  { color: var(--accent); }
+    .cmp-table .cell-sample {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+    }
+
+    /* ─── sample balance ─────────────────────────────────────────────── */
+    .balance-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+    }
+    .balance-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .balance-card .bal-segment {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--meta);
+      margin-bottom: var(--space-2);
+    }
+    .balance-card .bal-counts {
+      display: flex;
+      gap: var(--space-4);
+      font-family: var(--font-mono);
+      font-size: var(--text-md);
+      font-weight: 600;
+      margin-bottom: var(--space-1);
+    }
+    .balance-card .bal-treatment { color: var(--accent); }
+    .balance-card .bal-control   { color: var(--muted); }
+    .balance-card .bal-split {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--meta);
+    }
+    .balance-card .bal-status {
+      margin-top: var(--space-2);
+    }
+
+    /* ─── recommended actions ────────────────────────────────────────── */
+    .action-section {
+      padding-block: var(--space-8);
+      background: var(--surface-alt);
+      border-top: 1px solid var(--border-strong);
+      border-bottom: 1px solid var(--border-strong);
+    }
+    .action-list { list-style: none; padding: 0; margin: 0; }
+    .action-item {
+      display: flex; gap: var(--space-4); align-items: flex-start;
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--border);
+    }
+    .action-item:first-child { border-top: none; }
+    .action-item .action-num {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-radius: var(--radius-sm);
+      width: 26px; height: 26px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .action-item .action-body .action-title {
+      font-weight: 600;
+      font-size: var(--text-md);
+      margin-bottom: 2px;
+    }
+    .action-item .action-body .action-detail {
+      font-size: var(--text-sm);
+      color: var(--muted);
+    }
+
+    /* ─── footer ─────────────────────────────────────────────────────── */
+    .pagefoot {
+      padding-block: var(--space-8);
+      color: var(--meta);
+      font-size: var(--text-xs);
+      line-height: 1.7;
+    }
+    .pagefoot .foot-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-6);
+    }
+    .pagefoot .foot-grid h4 {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: var(--space-1);
+    }
+    .pagefoot .foot-grid p {
+      font-size: var(--text-xs);
+      line-height: 1.6;
+    }
+
+    /* ─── responsive ─────────────────────────────────────────────────── */
+    @media (max-width: 920px) {
+      .grid-2, .grid-4 { grid-template-columns: 1fr; }
+      .kpi-strip, .balance-grid { grid-template-columns: repeat(2, 1fr); }
+      .decision-band .dec-grid { grid-template-columns: repeat(2, 1fr); }
+      .exp-header .exp-meta-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 540px) {
+      :root { --gutter: 16px; }
+      .kpi-strip, .balance-grid { grid-template-columns: 1fr; }
+      .decision-band .dec-grid { grid-template-columns: 1fr; }
+      .exp-header .exp-meta-grid { grid-template-columns: 1fr; }
+      .decision-band .dec-value { font-size: var(--text-xl); }
+      .pagefoot .foot-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── print ──────────────────────────────────────────────────────── */
+    @media print {
+      :root {
+        --bg: #ffffff;
+        --surface: #ffffff;
+        --surface-alt: #f5f5f5;
+        --fg: #111111;
+        --muted: #555555;
+        --meta: #777777;
+        --border: #cccccc;
+        --border-strong: #999999;
+        --accent: #b8860b;
+        --positive: #1d7d4c;
+        --negative: #b72b2b;
+      }
+      body { font-size: 11px; }
+      .section { padding-block: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 1 — Compact experiment identity header
+   ═════════════════════════════════════════════════════════════════════ -->
+<header class="exp-header">
+  <div class="container">
+    <div class="row-between">
+      <div>
+        <h1 class="exp-title">Experiment A — Treatment Variant B vs. Control Variant A</h1>
+        <div class="exp-meta-grid">
+          <div class="exp-meta-item">
+            <span class="emo-label">Experiment</span><br>
+            <span class="emo-value">Experiment ID A</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="emo-label">Treatment</span><br>
+            <span class="emo-value">Variant B · v3.2</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="emo-label">Control</span><br>
+            <span class="emo-value">Variant A · v2.1</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="emo-label">Population</span><br>
+            <span class="emo-value">Population A</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="emo-label">Source Table</span><br>
+            <span class="emo-value">Source Table A</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="emo-label">Window</span><br>
+            <span class="emo-value">Experiment Window</span>
+          </div>
+          <div class="exp-meta-item">
+            <span class="emo-label">Owner</span><br>
+            <span class="emo-value">Owner Group A</span>
+          </div>
+        </div>
+      </div>
+      <span class="freshness">
+        <span class="freshness-dot"></span>
+        Updated Decision Date · Data through Experiment Window
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 2 — Decision band (before KPI cards)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="decision-band">
+  <div class="container">
+    <p class="dec-label">Experiment Decision</p>
+    <p class="dec-value">Ship with staged rollout — positive lift confirmed; guardrail on watch</p>
+    <div class="dec-grid">
+      <div class="dec-item">
+        <div class="dec-item-label">Current Decision</div>
+        <div class="dec-item-value">Ship with staged rollout</div>
+        <div class="dec-item-sub">Decision Date</div>
+      </div>
+      <div class="dec-item">
+        <div class="dec-item-label">Required Action</div>
+        <div class="dec-item-value dec-positive">Monitor guardrail before full rollout</div>
+        <div class="dec-item-sub">Staged ramp: 25% → 50% → 100%</div>
+      </div>
+      <div class="dec-item">
+        <div class="dec-item-label">Confidence</div>
+        <div class="dec-item-value">
+          <span class="dec-positive">High, with guardrail watch</span>
+        </div>
+        <div class="dec-item-sub">p &lt; 0.001 · 95% CI [0.021, 0.039]</div>
+      </div>
+      <div class="dec-item">
+        <div class="dec-item-label">Next Checkpoint</div>
+        <div class="dec-item-value">Next Analysis Window</div>
+        <div class="dec-item-sub">Guardrail re-check after staged ramp</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 3 — 4-card KPI strip
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <p class="eyebrow" style="margin-bottom: var(--space-4);">Primary Results · Decision Inputs</p>
+    <div class="kpi-strip">
+
+      <!-- Card 1: Assigned Population -->
+      <article class="kpi-card" aria-label="Assigned population">
+        <div class="kpi-label">Assigned Population</div>
+        <div class="kpi-value num">126,842</div>
+        <div class="kpi-sub">Total eligible · Population A</div>
+        <div class="kpi-denom">Treatment: 63,382 · Control: 63,460</div>
+      </article>
+
+      <!-- Card 2: Primary Metric Lift -->
+      <article class="kpi-card" aria-label="Primary metric lift">
+        <div class="kpi-label">Primary Metric Lift</div>
+        <div class="kpi-value num accent">+3.0<span style="font-size:0.45em;opacity:0.7;">pp</span></div>
+        <div class="kpi-sub">Treatment: 18.4% · Control: 15.4%</div>
+        <div class="kpi-denom">T: 11,663 / 63,382 · C: 9,773 / 63,460</div>
+      </article>
+
+      <!-- Card 3: Treatment Metric -->
+      <article class="kpi-card" aria-label="Treatment metric value">
+        <div class="kpi-label">Treatment Metric</div>
+        <div class="kpi-value num positive">18.4<span style="font-size:0.45em;opacity:0.7;">%</span></div>
+        <div class="kpi-sub">Primary metric · Treatment arm</div>
+        <div class="kpi-denom">Rate: 11,663 / 63,382 · SE: ±0.15 pp</div>
+      </article>
+
+      <!-- Card 4: Guardrail Status -->
+      <article class="kpi-card" aria-label="Guardrail metrics status">
+        <div class="kpi-label">Guardrail Status</div>
+        <div class="kpi-value num">3 / 4</div>
+        <div class="kpi-sub">Passing · 1 at watch level</div>
+        <div class="kpi-sub" style="margin-top: 4px;">
+          <span class="pill pill-positive">3 PASS</span>
+          <span class="pill pill-warn" style="margin-left: 4px;">1 WATCH</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 4 — Compact treatment/control comparison table
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-1);">Treatment vs. Control · Metric Comparison</h2>
+    <p class="meta" style="margin-bottom: var(--space-5);">All rates shown with numerator / denominator. Window: Experiment Window. Population A.</p>
+    <div class="cmp-table-wrap">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Metric</th>
+            <th class="num">Treatment (B)</th>
+            <th class="num">Control (A)</th>
+            <th class="num">Difference</th>
+            <th class="act">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Primary Metric -->
+          <tr>
+            <td class="row-label">Primary Metric</td>
+            <td class="num">
+              <span class="cell-value">18.4%</span><br>
+              <span class="cell-sample">11,663 / 63,382</span>
+            </td>
+            <td class="num">
+              <span class="cell-value">15.4%</span><br>
+              <span class="cell-sample">9,773 / 63,460</span>
+            </td>
+            <td class="num">
+              <span class="cell-diff positive">+3.0 pp</span><br>
+              <span class="cell-sample">p &lt; 0.001</span>
+            </td>
+            <td style="text-align:center;"><span class="pill pill-positive">Ship</span></td>
+          </tr>
+
+          <!-- Secondary Metric A -->
+          <tr>
+            <td class="row-label">Secondary Metric A</td>
+            <td class="num">
+              <span class="cell-value">42.1%</span><br>
+              <span class="cell-sample">26,684 / 63,382</span>
+            </td>
+            <td class="num">
+              <span class="cell-value">37.8%</span><br>
+              <span class="cell-sample">23,988 / 63,460</span>
+            </td>
+            <td class="num">
+              <span class="cell-diff positive">+4.3 pp</span><br>
+              <span class="cell-sample">p &lt; 0.001</span>
+            </td>
+            <td style="text-align:center;"><span class="pill pill-positive">Ship</span></td>
+          </tr>
+
+          <!-- Guardrail Metric A -->
+          <tr>
+            <td class="row-label">Guardrail Metric A</td>
+            <td class="num">
+              <span class="cell-value">3.1%</span><br>
+              <span class="cell-sample">1,965 / 63,382</span>
+            </td>
+            <td class="num">
+              <span class="cell-value">2.8%</span><br>
+              <span class="cell-sample">1,777 / 63,460</span>
+            </td>
+            <td class="num">
+              <span class="cell-diff accent">+0.3 pp</span><br>
+              <span class="cell-sample">p = 0.031</span>
+            </td>
+            <td style="text-align:center;"><span class="pill pill-warn">Watch</span></td>
+          </tr>
+
+          <!-- Quality Metric A -->
+          <tr>
+            <td class="row-label">Quality Metric A</td>
+            <td class="num">
+              <span class="cell-value">97.2%</span><br>
+              <span class="cell-sample">61,607 / 63,382</span>
+            </td>
+            <td class="num">
+              <span class="cell-value">97.4%</span><br>
+              <span class="cell-sample">61,810 / 63,460</span>
+            </td>
+            <td class="num">
+              <span class="cell-diff">−0.2 pp</span><br>
+              <span class="cell-sample">p = 0.142</span>
+            </td>
+            <td style="text-align:center;"><span class="pill pill-neutral">Neutral</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+    <p class="meta" style="margin-top: var(--space-3);">
+      Difference = Treatment − Control. Denominators shown inline for every rate.
+      p-values via two-sided z-test · multiplicity adjustment: none (4 metrics, pre-registered).
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 5 — Sample balance summary
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <h2 style="margin-bottom: var(--space-1);">Sample Balance · Segment A–D</h2>
+    <p class="meta" style="margin-bottom: var(--space-5);">Assignment: randomized 50/50 within each segment. Minimum detectable effect: 1.5 pp (80% power).</p>
+    <div class="balance-grid">
+
+      <!-- Segment A -->
+      <div class="balance-card">
+        <div class="bal-segment">Segment A</div>
+        <div class="bal-counts">
+          <span class="bal-treatment">T: 18,240</span>
+          <span class="bal-control">C: 18,195</span>
+        </div>
+        <div class="bal-split">Split 50.1 / 49.9 · Δ +45</div>
+        <div class="bal-status">
+          <span class="pill pill-positive">Balanced</span>
+        </div>
+      </div>
+
+      <!-- Segment B -->
+      <div class="balance-card">
+        <div class="bal-segment">Segment B</div>
+        <div class="bal-counts">
+          <span class="bal-treatment">T: 22,410</span>
+          <span class="bal-control">C: 22,380</span>
+        </div>
+        <div class="bal-split">Split 50.0 / 50.0 · Δ +30</div>
+        <div class="bal-status">
+          <span class="pill pill-positive">Balanced</span>
+        </div>
+      </div>
+
+      <!-- Segment C -->
+      <div class="balance-card">
+        <div class="bal-segment">Segment C</div>
+        <div class="bal-counts">
+          <span class="bal-treatment">T: 15,880</span>
+          <span class="bal-control">C: 15,925</span>
+        </div>
+        <div class="bal-split">Split 49.9 / 50.1 · Δ −45</div>
+        <div class="bal-status">
+          <span class="pill pill-positive">Balanced</span>
+        </div>
+      </div>
+
+      <!-- Segment D -->
+      <div class="balance-card">
+        <div class="bal-segment">Segment D</div>
+        <div class="bal-counts">
+          <span class="bal-treatment">T: 6,852</span>
+          <span class="bal-control">C: 6,960</span>
+        </div>
+        <div class="bal-split">Split 49.6 / 50.4 · Δ −108</div>
+        <div class="bal-status">
+          <span class="pill pill-warn">Slight skew</span>
+        </div>
+      </div>
+
+    </div>
+    <p class="meta" style="margin-top: var(--space-4);">
+      Segment D shows minor allocation skew (−108, 1.6% of segment). Within pre-registered tolerance (±2%).
+      All segments pass covariate balance checks on pre-specified dimensions (10 covariates, all p &gt; 0.10).
+    </p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 6 — Recommended experiment action (highly visible)
+   ═════════════════════════════════════════════════════════════════════ -->
+<section class="action-section">
+  <div class="container">
+    <p class="eyebrow" style="margin-bottom: var(--space-4);">Recommended Actions</p>
+    <ol class="action-list">
+      <li class="action-item">
+        <div class="action-num">1</div>
+        <div class="action-body">
+          <div class="action-title">Promote Treatment Variant B to full population.</div>
+          <p class="action-detail">Primary metric lift is statistically significant (+3.0 pp, p &lt; 0.001). Ramp from 50% to 100% across 7 days with automated guardrail monitoring. Revert if Guardrail Metric A exceeds +1.0 pp threshold.</p>
+        </div>
+      </li>
+      <li class="action-item">
+        <div class="action-num">2</div>
+        <div class="action-body">
+          <div class="action-title">Monitor Guardrail Metric A during ramp — re-evaluate at 50% deployment.</div>
+          <p class="action-detail">Guardrail Metric A shows +0.3 pp (p = 0.031). Below severity threshold but directional. Set automated alert at +0.5 pp. Full re-assessment at Next Analysis Window checkpoint before ramping to 100%.</p>
+        </div>
+      </li>
+      <li class="action-item">
+        <div class="action-num">3</div>
+        <div class="action-body">
+          <div class="action-title">Archive experiment results; schedule long-term holdout validation.</div>
+          <p class="action-detail">Retain 5% holdout from control arm for 90-day persistence measurement. Register experiment metadata, seed, and analysis notebook in experiment registry. Schedule follow-up readout for Follow-up Window.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════════
+   SECTION 7 — Minimal footer
+   ═════════════════════════════════════════════════════════════════════ -->
+<footer class="pagefoot">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <h4>Definitions</h4>
+        <p>
+          <strong>Primary Metric</strong>: binary outcome observed within 14-day post-assignment window.<br>
+          <strong>Secondary Metric A</strong>: supporting outcome measured in the same observation window.<br>
+          <strong>Guardrail Metric A</strong>: neutral / should-not-move metric — monitored for degradation.<br>
+          <strong>Quality Metric A</strong>: data completeness — records with non-null outcome.
+        </p>
+      </div>
+      <div>
+        <h4>Source</h4>
+        <p>
+          Source Table A<br>
+          Experiment ID: Experiment ID A<br>
+          Assignment: hash-based randomization using stable unit identifier, 50/50 split, stratified by Segment A–D.
+        </p>
+      </div>
+      <div>
+        <h4>Freshness</h4>
+        <p>
+          Data through Experiment Window 23:59 UTC<br>
+          Dashboard generated Decision Date 09:00 UTC<br>
+          Lag: 2.4 days from window close to analysis<br>
+          All metrics stable within reporting lag window.
+        </p>
+      </div>
+      <div>
+        <h4>Caveats</h4>
+        <p>
+          Segment D allocation skew (−1.6%) within pre-registered tolerance.<br>
+          Guardrail Metric A reaches nominal significance (p = 0.031); effect size is small (+0.3 pp).<br>
+          No multiplicity correction applied — 4 metrics pre-registered.<br>
+          Minimum detectable effect: 1.5 pp at 80% power.
+        </p>
+      </div>
+    </div>
+    <p style="margin-top: var(--space-6); text-align: center; color: var(--meta);">
+      Experiment A/B Test Dashboard · Compact Reference Template · Data Scientist Skill<br>
+      Placeholder data only — not a real experiment result. Reusable across any domain.
+    </p>
+  </div>
+</footer>
+
+</body></html>
